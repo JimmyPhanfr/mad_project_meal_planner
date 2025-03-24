@@ -16,6 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final AuthenticationService authService = AuthenticationService();
 
   void signUp() async {
+    // TODO: getReasion() to show user why password is not accepted
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
