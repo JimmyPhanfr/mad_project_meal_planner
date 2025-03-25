@@ -86,6 +86,7 @@ class RecipeDB {
     db.close();
   }
 
+/*
   Map<String, dynamic> recipeToMap({
     required int id,
     required String title,
@@ -103,6 +104,7 @@ class RecipeDB {
       'tags': jsonEncode(tags),
     };
   }
+*/
 
   Map<String, dynamic> insertRecipeModel({
     required String title,

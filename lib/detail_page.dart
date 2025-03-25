@@ -1,4 +1,4 @@
-import 'dart:convert'; // Import this to use jsonDecode
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class DetailScreen extends StatelessWidget {

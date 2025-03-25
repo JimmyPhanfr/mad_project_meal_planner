@@ -3,8 +3,6 @@ import 'detail_page.dart';
 import 'package:flutter/material.dart';
 import 'recipe_db.dart';
 
-
-
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
