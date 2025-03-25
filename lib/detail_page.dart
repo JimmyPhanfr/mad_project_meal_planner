@@ -7,7 +7,7 @@ class DetailScreen extends StatelessWidget {
   final String instructionsJson;
   final String image;
 
-  DetailScreen({
+  const DetailScreen({super.key, 
     required this.title,
     required this.ingredientsJson,
     required this.instructionsJson,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
 import 'search_page.dart';
 
 void main() async {

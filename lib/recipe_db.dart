@@ -44,25 +44,32 @@ class RecipeDB {
     return await db.query('recipes');
   }
 
-  Future<bool> isDatabasePopulated() async {
+  Future<int> getDatabaseRecipeCount() async {
     final db = await instance.database;
-    final count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recipes'));
-    return (count ?? 0) > 0;
+    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recipes')) ?? 0;
   }
 
   Future<void> populateDatabase(List<Map<String, dynamic>> recipes) async {
     final db = await instance.database;
-    if (await isDatabasePopulated()) {
-      print('Database already populated. Skipping insertion.');
+    final count = await getDatabaseRecipeCount();
+
+    if (count >= recipes.length) {
+      print('Database already has sufficient data. Skipping insertion.');
       return;
     }
-    Batch batch = db.batch();
-    for (var recipe in recipes) {
-      batch.insert('recipes', recipe);
-    }
-    await batch.commit(noResult: true);
-    print('Database populated successfully!');
+    
+    await db.transaction((txn) async {
+      await txn.delete('recipes');
+      Batch batch = txn.batch();
+      for (var recipe in recipes) {
+        batch.insert('recipes', recipe);
+      }
+      await batch.commit(noResult: true);
+    });
+
+    print('Database repopulated successfully!');
   }
+
 
   Future<int> updateRecipe(int id, Map<String, dynamic> recipe) async {
     final db = await instance.database;
