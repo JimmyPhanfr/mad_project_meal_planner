@@ -118,11 +118,12 @@ class RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 15.0),
+                    /*
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please Re-Enter password';
-                        } else if (value != _textControllerPassword.toString()) {
+                        } else if (value == _textControllerPassword.toString()) {
                           return 'Passwords do not match';
                         }
                         return null;
@@ -138,7 +139,7 @@ class RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10),*/
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
