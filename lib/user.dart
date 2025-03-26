@@ -8,7 +8,7 @@ class User {
   final String password;
   final List<String> favorites;
   final List<String> groceries;
-  final List<String> todorecipes;
+  final List<Map<String, String>> todorecipes; 
 
   User({
     required this.id,
@@ -46,7 +46,9 @@ class User {
       password: map['password'],
       favorites: List<String>.from(jsonDecode(map['favorites'])),
       groceries: List<String>.from(jsonDecode(map['groceries'])),
-      todorecipes: List<String>.from(jsonDecode(map['todorecipes'])),
+      todorecipes: List<Map<String, String>>.from(
+        jsonDecode(map['todorecipes']).map((item) => Map<String, String>.from(item)),
+      ),
     );
   }
 
@@ -58,7 +60,7 @@ class User {
     String? password,
     List<String>? favorites,
     List<String>? groceries,
-    List<String>? todorecipes,
+    List<Map<String, String>>? todorecipes,
   }) {
     return User(
       id: id ?? this.id,

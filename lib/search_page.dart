@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'user.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 class SearchPage extends StatefulWidget {
   final User user;
@@ -17,6 +19,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   late User _currentUser;
+  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   @override
   void initState() {
@@ -88,6 +91,33 @@ class _SearchPageState extends State<SearchPage> {
         SnackBar(content: Text('${recipe['title']} removed from favorites!')),
       );
     }
+  }
+
+  _addToTodorecipes(String recipeId, String date) async {
+    List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
+    updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
+    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes);
+    await UserDB().updateUser(updatedUser);
+    setState(() {
+      _currentUser = updatedUser;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Recipe scheduled for $date!')),
+    );
+  }
+
+  Future<String?> _selectDate(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      return DateFormat('yyyy-MM-dd').format(selectedDate);
+    }
+    return null;
   }
 
 
@@ -218,6 +248,22 @@ class _SearchPageState extends State<SearchPage> {
                                   _removeFromFavorites(recipe);
                                 } else {
                                   _addToFavorites(recipe);
+                                }
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 10,
+                            right: 10,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.access_alarm_outlined,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                String? selectedDate = await _selectDate(context);
+                                if (selectedDate != null) {
+                                  _addToTodorecipes(recipe['id'], selectedDate);
                                 }
                               },
                             ),
