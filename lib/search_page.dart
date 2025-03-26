@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'user.dart';
-import 'package:table_calendar/table_calendar.dart';
+//import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class SearchPage extends StatefulWidget {
@@ -43,7 +43,6 @@ class _SearchPageState extends State<SearchPage> {
       final searchQuery = query.toLowerCase();
       return title.contains(searchQuery);
     }).toList();
-
     setState(() {
       _filteredRecipes = filtered;
     });
@@ -51,18 +50,13 @@ class _SearchPageState extends State<SearchPage> {
 
   _addToFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
-
     if (!updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.add(recipe['id'].toString());
-
       User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
-
       await UserDB().updateUser(updatedUser);
-
       setState(() {
         _currentUser = updatedUser;
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} added to favorites!')),
       );
@@ -75,18 +69,13 @@ class _SearchPageState extends State<SearchPage> {
 
   _removeFromFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
-
     if (updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.remove(recipe['id'].toString());
-
       User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
-
       await UserDB().updateUser(updatedUser);
-
       setState(() {
         _currentUser = updatedUser;
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} removed from favorites!')),
       );
