@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class UserDB {
   static final UserDB _instance = UserDB._internal();
@@ -43,9 +45,19 @@ class UserDB {
     );
   }
 
+  String _hashPassword(String password) {
+    return sha256.convert(utf8.encode(password)).toString();
+  }
+
+
   Future<int> registerUser(Map<String, dynamic> user) async {
     final db = await database;
-    return await db.insert('users', user);
+    user['password'] = _hashPassword(user['password']);
+    return await db.insert(
+      'users',
+      user,
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
   }
 
   Future<List<Map<String, dynamic>>> getUsers() async {
@@ -55,11 +67,20 @@ class UserDB {
 
   Future<Map<String, dynamic>?> getUser(String email, String password) async {
     final db = await database;
+    final String hashedPassword = _hashPassword(password);
     final List<Map<String, dynamic>> result = await db.query(
       'users',
       where: 'email = ? AND password = ?',
-      whereArgs: [email, password],
+      whereArgs: [email, hashedPassword],
+      limit: 1,
     );
     return result.isNotEmpty ? result.first : null;
+  }
+
+  Future<void> closeDatabase() async {
+    final db = await _database;
+    if (db != null) {
+      await db.close();
+    }
   }
 }
