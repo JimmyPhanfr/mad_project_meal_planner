@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'user.dart'; 
 
 class UserDB {
   static final UserDB _instance = UserDB._internal();
@@ -49,23 +50,26 @@ class UserDB {
     return sha256.convert(utf8.encode(password)).toString();
   }
 
-
-  Future<int> registerUser(Map<String, dynamic> user) async {
+  Future<int> registerUser(User user) async {
     final db = await database;
-    user['password'] = _hashPassword(user['password']);
+    Map<String, dynamic> userMap = user.toMap();
+    userMap['password'] = _hashPassword(user.password);
     return await db.insert(
       'users',
-      user,
+      userMap,
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
   }
 
-  Future<List<Map<String, dynamic>>> getUsers() async {
+  Future<List<User>> getUsers() async {
     final db = await database;
-    return await db.query('users');
+    final List<Map<String, dynamic>> userMaps = await db.query('users');
+    return List.generate(userMaps.length, (i) {
+      return User.fromMap(userMaps[i]);
+    });
   }
 
-  Future<Map<String, dynamic>?> getUser(String email, String password) async {
+  Future<User?> getUser(String email, String password) async {
     final db = await database;
     final String hashedPassword = _hashPassword(password);
     final List<Map<String, dynamic>> result = await db.query(
@@ -74,7 +78,39 @@ class UserDB {
       whereArgs: [email, hashedPassword],
       limit: 1,
     );
-    return result.isNotEmpty ? result.first : null;
+    if (result.isNotEmpty) {
+      print('Found user');
+      return User.fromMap(result.first);
+    }
+    print('Did not find user');
+    return null;
+  }
+
+  Future<User?> retrieveUser(User user) async {
+    final db = await database;
+    final String hashedPassword = _hashPassword(user.password);
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [user.email, hashedPassword],
+      limit: 1,
+    );
+    if (result.isNotEmpty) {
+      return User.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<int> updateUser(User user) async {
+    final db = await database;
+    Map<String, dynamic> values = user.toMap();
+
+    return await db.update(
+      'users',
+      values,
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
   }
 
   Future<void> closeDatabase() async {

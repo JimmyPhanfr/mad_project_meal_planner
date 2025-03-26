@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'search_page.dart';
 import 'user_db.dart';
 import 'register_page.dart';
+import 'user.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,11 +24,19 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      bool isValid = await _validateUser(_emailController.text, _passwordController.text);
+      bool isValid = await _validateUser(_emailController.text.trim(), _passwordController.text.trim());
 
       if (isValid) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage()));
+        final user = await UserDB().getUser(_emailController.text.trim(), _passwordController.text.trim());
+        if (user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SearchPage(user: user)),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User not found')));
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid Email or Password')));
       }

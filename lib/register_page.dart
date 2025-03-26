@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'login_page.dart';
 import 'user_db.dart';
+import 'user.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -144,16 +145,17 @@ class RegisterPageState extends State<RegisterPage> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          Map<String, dynamic> user = {
-                            'name': _textControllerName.text,
-                            'email': _textControllerEmail.text,
-                            'date_of_birth': _textControllerDateOfBirth.text,
-                            'password': _textControllerPassword.text,
-                            'favorites': '[]',
-                            'groceries': '[]',
-                            'todorecipes': '[]',
-                          };
-                          int result = await userDb.registerUser(user);
+                          User newUser = User(
+                            id: 0,
+                            name: _textControllerName.text.trim(),
+                            email: _textControllerEmail.text.trim(),
+                            dateOfBirth: _textControllerDateOfBirth.text,
+                            password: _textControllerPassword.text.trim(),
+                            favorites: [],
+                            groceries: [],
+                            todorecipes: [],
+                          );
+                          int result = await userDb.registerUser(newUser);
                           if (result > 0) {
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Successful')));
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
