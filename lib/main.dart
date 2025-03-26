@@ -4,11 +4,14 @@ import 'login_page.dart';
 import 'user_db.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'recipe_db.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //String path = join(await getDatabasesPath(), 'users.db');
-  //await deleteDatabase(path);
+  /*String userPath = join(await getDatabasesPath(), 'users.db');
+  await deleteDatabase(userPath);
+  String recipePath = join(await getDatabasesPath(), 'recipes.db');
+  await deleteDatabase(recipePath);*/
   runApp(MealPrepApp());
 }
 

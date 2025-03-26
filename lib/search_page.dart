@@ -49,8 +49,8 @@ class _SearchPageState extends State<SearchPage> {
   _addToFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
 
-    if (!updatedFavorites.contains(recipe['title'])) {
-      updatedFavorites.add(recipe['title']);
+    if (!updatedFavorites.contains(recipe['id'].toString())) {
+      updatedFavorites.add(recipe['id'].toString());
 
       User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
 
@@ -73,8 +73,8 @@ class _SearchPageState extends State<SearchPage> {
   _removeFromFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
 
-    if (updatedFavorites.contains(recipe['title'])) {
-      updatedFavorites.remove(recipe['title']);
+    if (updatedFavorites.contains(recipe['id'].toString())) {
+      updatedFavorites.remove(recipe['id'].toString());
 
       User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
 
@@ -143,7 +143,7 @@ class _SearchPageState extends State<SearchPage> {
               itemCount: _filteredRecipes.length,
               itemBuilder: (context, index) {
                 final recipe = _filteredRecipes[index];
-                final isFavorite = _currentUser.favorites.contains(recipe['title']);
+                final isFavorite = _currentUser.favorites.contains(recipe['id'].toString());
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
