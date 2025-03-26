@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'register_page.dart';
+import 'dart:core';
+import 'login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +14,7 @@ class MealPrepApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RegisterPage(),
+      home: LoginPage(),
     );
   }
 }

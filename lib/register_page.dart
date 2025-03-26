@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'search_page.dart';
+import 'login_page.dart';
+import 'user_db.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
-
   @override
   RegisterPageState createState() => RegisterPageState();
 }
@@ -20,6 +20,8 @@ class RegisterPageState extends State<RegisterPage> {
   final _textControllerReenterPassword = TextEditingController();
 
   bool _isPasswordObscure = true;
+
+  final UserDB userDb = UserDB();
 
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -140,10 +142,24 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')));
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage()));
+                          Map<String, dynamic> user = {
+                            'name': _textControllerName.text,
+                            'email': _textControllerEmail.text,
+                            'date_of_birth': _textControllerDateOfBirth.text,
+                            'password': _textControllerPassword.text,
+                            'favorites': '[]',
+                            'groceries': '[]',
+                            'todorecipes': '[]',
+                          };
+                          int result = await userDb.registerUser(user);
+                          if (result > 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Successful')));
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error Registering User')));
+                          }
                         }
                       },
                       child: const Text('Submit'),
