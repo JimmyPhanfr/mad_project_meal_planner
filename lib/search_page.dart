@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 
 import 'home_page.dart';
 import 'favorite_page.dart';
-import 'search_page.dart';
 import 'planner_page.dart';
 import 'accounts_page.dart';
 
@@ -45,9 +44,9 @@ class _SearchPageState extends State<SearchPage> {
 
   _filterRecipes(String query) {
     final filtered = _recipes.where((recipe) {
-      final title = recipe['title'].toLowerCase();
+      final tags = List<String>.from(jsonDecode(recipe['tags']));
       final searchQuery = query.toLowerCase();
-      return title.contains(searchQuery);
+      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
     }).toList();
     setState(() {
       _filteredRecipes = filtered;
@@ -352,7 +351,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve over rice with pickled ginger, green onions, and shichimi to taste.'
     ]),
     'image' : 'assets/images/gyudon.webp',
-    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese']),
+    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese', 'gyudon']),
   },
   {
     'id': 2,
@@ -378,7 +377,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve hot with rice and peas.'
     ]),
     'image' : 'assets/images/oxtail.jpg',
-    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans']),
+    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans', 'garlic', 'pepper']),
   },
   {
     'id': 3,
@@ -407,7 +406,7 @@ final List<Map<String, dynamic>> recipes = [
       'Boom! Done! Jamaican curry chicken is ready to serve! Looks wonderful, doesn\'t it? I\'m sure your kitchen smells awesome.',
     ]),
     'image' : 'assets/images/curry.jpg',
-    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean']),
+    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean', 'onion']),
   },
   {
     'id': 4,
@@ -433,7 +432,7 @@ final List<Map<String, dynamic>> recipes = [
       'Slide broth, egg, and chicken out on top of a bowl of rice. Sprinkle with scallions and serve.',
     ]),
     'image' : 'assets/images/katsudon.jpg',
-    'tags' : jsonEncode(['chicken', 'egg', 'rice', 'asian', 'japanese']),
+    'tags' : jsonEncode(['pork', 'egg', 'rice', 'asian', 'japanese', 'katsudon', 'onion']),
   },
   {
     'id': 5,
@@ -458,7 +457,7 @@ final List<Map<String, dynamic>> recipes = [
       'Let pasta rest for a few minutes, tossing frequently until the carbonara sauce thickens. Serve immediately with a sprinkle of fresh parsley.',
     ]),
     'image' : 'assets/images/carbonara.jpg',
-    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork']),
+    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork', 'carbonara', 'garlic', 'parsley']),
   },
   {
     'id' : 6,

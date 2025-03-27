@@ -8,10 +8,10 @@ import 'recipe_db.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  /*String userPath = join(await getDatabasesPath(), 'users.db');
+  String userPath = join(await getDatabasesPath(), 'users.db');
   await deleteDatabase(userPath);
   String recipePath = join(await getDatabasesPath(), 'recipes.db');
-  await deleteDatabase(recipePath);*/
+  await deleteDatabase(recipePath);
   runApp(MealPrepApp());
 }
 
