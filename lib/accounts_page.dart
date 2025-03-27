@@ -68,10 +68,11 @@ class _AccountsPageState extends State<AccountsPage> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 80.0,
+        height: 60.0,
         width: double.infinity,
         color: Colors.white,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
@@ -98,11 +99,19 @@ class _AccountsPageState extends State<AccountsPage> {
               },
               icon: Icon(Icons.list),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.person),
+            Container(
+              height: 40,
+              width: 40,
+              decoration: new BoxDecoration(
+                color: Colors.lightGreenAccent,
+                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
+                },
+                icon: Icon(Icons.person),
+              ),
             ),
           ],
         ),

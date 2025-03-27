@@ -231,10 +231,11 @@ class _FavoritePageState extends State<FavoritePage> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 80.0,
+        height: 60.0,
         width: double.infinity,
         color: Colors.white,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
@@ -243,11 +244,19 @@ class _FavoritePageState extends State<FavoritePage> {
               },
               icon: Icon(Icons.home),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
-              },
-              icon: Icon(Icons.favorite),
+            Container(
+              height: 40,
+              width: 40,
+              decoration: new BoxDecoration(
+                color: Colors.lightGreenAccent,
+                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
+                },
+                icon: Icon(Icons.favorite),
+              ),
             ),
             IconButton(
               onPressed: () {
