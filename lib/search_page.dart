@@ -7,6 +7,11 @@ import 'user.dart';
 //import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
+import 'home_page.dart';
+import 'favorite_page.dart';
+import 'planner_page.dart';
+import 'accounts_page.dart';
+
 class SearchPage extends StatefulWidget {
   final User user;
   const SearchPage({Key? key, required this.user}) : super(key: key); 
@@ -39,9 +44,9 @@ class _SearchPageState extends State<SearchPage> {
 
   _filterRecipes(String query) {
     final filtered = _recipes.where((recipe) {
-      final title = recipe['title'].toLowerCase();
+      final tags = List<String>.from(jsonDecode(recipe['tags']));
       final searchQuery = query.toLowerCase();
-      return title.contains(searchQuery);
+      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
     }).toList();
     setState(() {
       _filteredRecipes = filtered;
@@ -121,7 +126,6 @@ class _SearchPageState extends State<SearchPage> {
     }
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -280,6 +284,55 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
+      bottomNavigationBar: Container(
+        height: 60.0,
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.home),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
+              },
+              icon: Icon(Icons.favorite),
+            ),
+            Container(
+              height: 40,
+              width: 40,
+              decoration: new BoxDecoration(
+                color: Colors.lightGreenAccent,
+                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
+                },
+                icon: Icon(Icons.search),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.list),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.person),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -314,7 +367,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve over rice with pickled ginger, green onions, and shichimi to taste.'
     ]),
     'image' : 'assets/images/gyudon.webp',
-    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese']),
+    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese', 'gyudon']),
   },
   {
     'id': 2,
@@ -340,7 +393,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve hot with rice and peas.'
     ]),
     'image' : 'assets/images/oxtail.jpg',
-    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans']),
+    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans', 'garlic', 'pepper']),
   },
   {
     'id': 3,
@@ -381,7 +434,7 @@ final List<Map<String, dynamic>> recipes = [
       'Boom! Done! Jamaican curry chicken is ready to serve! Looks wonderful, doesn\'t it? I\'m sure your kitchen smells awesome.',
     ]),
     'image' : 'assets/images/curry.jpg',
-    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean']),
+    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean', 'onion']),
   },
   {
     'id': 4,
@@ -407,7 +460,7 @@ final List<Map<String, dynamic>> recipes = [
       'Slide broth, egg, and chicken out on top of a bowl of rice. Sprinkle with scallions and serve.',
     ]),
     'image' : 'assets/images/katsudon.jpg',
-    'tags' : jsonEncode(['chicken', 'egg', 'rice', 'asian', 'japanese']),
+    'tags' : jsonEncode(['pork', 'egg', 'rice', 'asian', 'japanese', 'katsudon', 'onion']),
   },
   {
     'id': 5,
@@ -433,7 +486,7 @@ final List<Map<String, dynamic>> recipes = [
       'Let pasta rest for a few minutes, tossing frequently until the carbonara sauce thickens. Serve immediately with a sprinkle of fresh parsley.',
     ]),
     'image' : 'assets/images/carbonara.jpg',
-    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork']),
+    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork', 'carbonara', 'garlic', 'parsley']),
   },
   {
     'id' : 6,
