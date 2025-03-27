@@ -57,7 +57,7 @@ class RecipeDB {
       print('Database already has sufficient data. Skipping insertion.');
       return;
     }
-    
+  
     await db.transaction((txn) async {
       await txn.delete('recipes');
       Batch batch = txn.batch();
@@ -66,7 +66,6 @@ class RecipeDB {
       }
       await batch.commit(noResult: true);
     });
-
     print('Database repopulated successfully!');
   }
 

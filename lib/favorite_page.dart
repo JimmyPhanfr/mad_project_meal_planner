@@ -45,8 +45,21 @@ class _FavoritePageState extends State<FavoritePage> {
 
   _addToTodorecipes(String recipeId, String date) async {
     List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
+    List<String> updatedGroceries = List.from(_currentUser.groceries);
+    Map<String, dynamic>? recipe = favoriteRecipes.firstWhere((recipe) => recipe['id'] == int.parse(recipeId), orElse: () => {});
+    if (recipe == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Recipe not found!')),
+      );
+      return;
+    }
     updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes);
+    for (String ingredient in recipe['ingredients']) {
+      if (!updatedGroceries.contains(ingredient)) {
+        updatedGroceries.add(ingredient);
+      }
+    }
+    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
     await UserDB().updateUser(updatedUser);
     setState(() {
       _currentUser = updatedUser;
@@ -134,7 +147,6 @@ class _FavoritePageState extends State<FavoritePage> {
               itemBuilder: (context, index) {
                 final recipe = _filteredRecipes[index];
                 final isFavorite = favoriteRecipeIds.contains(recipe['id'].toString());
-
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(

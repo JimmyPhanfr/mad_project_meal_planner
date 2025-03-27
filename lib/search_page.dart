@@ -84,8 +84,21 @@ class _SearchPageState extends State<SearchPage> {
 
   _addToTodorecipes(String recipeId, String date) async {
     List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
+    List<String> updatedGroceries = List.from(_currentUser.groceries);
+    Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'] == int.parse(recipeId), orElse: () => {});
+    if (recipe == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Recipe not found!')),
+      );
+      return;
+    }
     updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes);
+    for (String ingredient in recipe['ingredients']) {
+      if (!updatedGroceries.contains(ingredient)) {
+        updatedGroceries.add(ingredient);
+      }
+    }
+    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
     await UserDB().updateUser(updatedUser);
     setState(() {
       _currentUser = updatedUser;
@@ -276,18 +289,21 @@ final List<Map<String, dynamic>> recipes = [
     'id': 1,
     'title': 'Gyudon',
     'ingredients': jsonEncode([
-      '1 Tbs soy sauce',
-      '1 Tbs sugar',
-      '2 Tbs mirin, seasoned rice wine',
-      '2 Tbs sake, rice wine',
-      '1/2 cup dashi broth',
-      '2 slices ginger',
-      '4 oz onion, sliced',
-      '8 oz thinly sliced beef',
-      '2 eggs',
-      '2 cups rice',
-      'benishoga, shredded pickled ginger',
-      'chopped green onion',
+      'soy sauce',
+      'sugar',
+      'mirin',
+      'seasoned rice wine',
+      'sake', 
+      'rice wine',
+      'dashi broth',
+      'ginger',
+      'onion',
+      'thinly sliced beef',
+      'eggs',
+      'rice',
+      'benishoga', 
+      'pickled ginger',
+      'green onion',
       'Shichimi togarashi'
     ]),
     'instructions': jsonEncode([
@@ -304,17 +320,17 @@ final List<Map<String, dynamic>> recipes = [
     'id': 2,
     'title': 'Jamaican Oxtail',
     'ingredients': jsonEncode([ 
-      '2 lbs oxtail',
-      '2 Tbs soy sauce',
-      '1 Tbs Worcestershire sauce',
-      '1 onion, chopped',
-      '2 garlic cloves, minced',
-      '1 Tbs browning sauce',
-      '1 tsp thyme',
-      '1 scotch bonnet pepper, chopped',
-      '2 carrots, sliced',
-      '1 can butter beans',
-      '2 cups beef broth'
+      'oxtail',
+      'soy sauce',
+      'Worcestershire sauce',
+      'onion',
+      'garlic',
+      'browning sauce',
+      'thyme',
+      'scotch bonnet pepper',
+      'carrots',
+      'butter beans',
+      'beef broth'
     ]),
     'instructions': jsonEncode([
       'Marinate oxtail with soy sauce, Worcestershire sauce, and seasonings for at least 1 hour.',
@@ -332,10 +348,22 @@ final List<Map<String, dynamic>> recipes = [
     'ingredients': jsonEncode([
       'Chicken',
       'Jamaican Curry Powder',
-      'Allspice, adobo seasoning, turmeric, thyme, and salt and black pepper',
-      'Onion, bell peppers or jalapeno peppers and/or Scotch bonnet peppers, carrot, garlic, ginger, green onion, potatoes',
-      'Coconut milk or chicken broth (chicken stock)',
-      'Olive oil for cooking, and your favorite hot sauce to taste',
+      'Allspice', 
+      'adobo seasoning', 
+      'turmeric', 
+      'thyme', 
+      'salt',
+      'black pepper',
+      'Onion', 
+      'scotch bonnet pepper',
+      'carrots', 
+      'garlic', 
+      'ginger', 
+      'green onion', 
+      'potatoes',
+      'Coconut milk',
+      'Olive oil',
+      'hot sauce',
     ]),
     'instructions': jsonEncode([
       'Cut up the chicken into smaller pieces and add to a large bowl.',
@@ -359,16 +387,16 @@ final List<Map<String, dynamic>> recipes = [
     'id': 4,
     'title': 'Katsudon',
     'ingredients': jsonEncode([
-      '1/3 cup (80ml) dashi, or 1/3 cup (80ml) water mixed with 3/4 teaspoon Hondashi',
-      '1 tablespoon (15ml) soy sauce',
-      '1 tablespoon (15ml) sake',
-      '2 teaspoons (8g) sugar',
-      '2 teaspoons (10ml) mirin',
-      '4 ounces thinly sliced yellow onion (115g; about 1/2 medium onion), optional',
-      '1 leftover Japanese fried chicken or pork cutlet, cut crosswise into 1/2-inch strips',
-      '2 large eggs',
-      '2 scallions, white and light green parts only, thinly sliced, plus more for garnish',
-      'Steamed white or brown rice, for serving',
+      'dashi',
+      'soy sauce',
+      'sake',
+      'sugar',
+      'mirin',
+      'yellow onion',
+      'pork cutlet',
+      'eggs',
+      'green onions',
+      'white rice',
     ]),
     'instructions': jsonEncode([
       'Combine dashi, soy sauce, sake, sugar, and mirin in a small saucepan or donburi pan and bring to a simmer over medium heat.',
@@ -388,10 +416,11 @@ final List<Map<String, dynamic>> recipes = [
       'Bacon',
       'Water',
       'Garlic',
-      'Spaghetti or linguine',
-      'Grated Parmesan',
+      'Linguine',
+      'Parmesan',
       'Eggs',
-      'Salt and Pepper',
+      'Salt',
+      'Pepper',
       'Fresh Parsley',
     ]),
     'instructions': jsonEncode([
@@ -410,15 +439,15 @@ final List<Map<String, dynamic>> recipes = [
     'id' : 6,
     'title' : 'Lasagna',
     'ingredients': jsonEncode([
-      '1 medium yellow onion',
-      '1 tablespoon olive oil',
-      '1 pound lean ground beef',
-      '1/2 teaspoon kosher salt',
-      '1/4 teaspoon freshly ground black pepper',
-      '1 (24 to 25-ounce) jar marinara sauce (3 cups), such as Rao\'s or Newman\'s Own',
-      '12 ounces low-moisture mozzarella cheese, shredded (about 3 cups), divided',
-      '15 dry lasagna noodles (not no-boil, about 2/3 of a 1-pound box), divided',
-      '15 to 16 ounces whole-milk ricotta cheese (about 2 cups), divided',
+      'yellow onion',
+      'olive oil',
+      'ground beef',
+      'salt',
+      'black pepper',
+      'marinara sauce',
+      'mozzarella cheese',
+      'lasagna noodles',
+      'ricotta cheese',
     ]),
     'instructions': jsonEncode([
       'Heat the oven to 400ºF. Arrange a rack in the middle of the oven and heat the oven to 400°F.',
