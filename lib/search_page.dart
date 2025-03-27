@@ -7,6 +7,12 @@ import 'user.dart';
 //import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
+import 'home_page.dart';
+import 'favorite_page.dart';
+import 'search_page.dart';
+import 'planner_page.dart';
+import 'accounts_page.dart';
+
 class SearchPage extends StatefulWidget {
   final User user;
   const SearchPage({Key? key, required this.user}) : super(key: key); 
@@ -108,7 +114,6 @@ class _SearchPageState extends State<SearchPage> {
     }
     return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -266,6 +271,46 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        height: 80.0,
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.home),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
+              },
+              icon: Icon(Icons.favorite),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.list),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.person),
+            ),
+          ],
+        ),
       ),
     );
   }

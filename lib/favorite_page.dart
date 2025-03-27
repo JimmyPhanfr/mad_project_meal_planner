@@ -5,6 +5,12 @@ import 'user.dart';
 import 'package:intl/intl.dart';
 import 'detail_page.dart';
 
+import 'home_page.dart';
+import 'favorite_page.dart';
+import 'search_page.dart';
+import 'planner_page.dart';
+import 'accounts_page.dart';
+
 class FavoritePage extends StatefulWidget {
   final User currentUser;
 
@@ -25,6 +31,7 @@ class _FavoritePageState extends State<FavoritePage> {
   @override
   void initState() {
     super.initState();
+    _currentUser = widget.currentUser;
     favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
   }
 
@@ -222,6 +229,46 @@ class _FavoritePageState extends State<FavoritePage> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        height: 80.0,
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.home),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
+              },
+              icon: Icon(Icons.favorite),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.list),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
+              },
+              icon: Icon(Icons.person),
+            ),
+          ],
+        ),
       ),
     );
   }
