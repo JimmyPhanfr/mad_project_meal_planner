@@ -9,25 +9,37 @@ class UserActions {
   User currentUser;
   List<Map<String, dynamic>> recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
+  final Function(User) updateUser;
+  final Function(List<Map<String, dynamic>>) updateFilteredRecipes;
 
-  UserActions({required this.context, required this.currentUser, required this.recipes});
+  UserActions({
+    required this.context, 
+    required this.currentUser, 
+    required this.recipes,
+    required this.updateUser,
+    required this.updateFilteredRecipes,
+  });
 
-  void _filterRecipes(String query) {
+  List<Map<String, dynamic>> get filteredRecipes => _filteredRecipes;
+
+  void filterRecipes(String query) {
     final filtered = recipes.where((recipe) {
       final tags = List<String>.from(jsonDecode(recipe['tags']));
       final searchQuery = query.toLowerCase();
       return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
     }).toList();
     _filteredRecipes = filtered;
+    updateFilteredRecipes(_filteredRecipes);
   }
 
-  Future<void> _addToFavorites(Map<String, dynamic> recipe) async {
+  Future<void> addToFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
     if (!updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.add(recipe['id'].toString());
       User updatedUser = currentUser.copyWith(favorites: updatedFavorites);
       await UserDB().updateUser(updatedUser);
       currentUser = updatedUser;
+      updateUser(currentUser);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} added to favorites!')),
       );
@@ -38,19 +50,21 @@ class UserActions {
     }
   }
 
-  Future<void> _removeFromFavorites(Map<String, dynamic> recipe) async {
+  Future<void> removeFromFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
     if (updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.remove(recipe['id'].toString());
       User updatedUser = currentUser.copyWith(favorites: updatedFavorites);
       await UserDB().updateUser(updatedUser);
+      currentUser = updatedUser;
+      updateUser(currentUser);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} removed from favorites!')),
       );
     }
   }
 
-  Future<void> _addToTodorecipes(String recipeId, String date) async {
+  Future<void> addToTodorecipes(String recipeId, String date) async {
     List<Map<String, String>> updatedTodorecipes = List.from(currentUser.todorecipes);
     Map<String, int>? updatedGroceries = Map.from(currentUser.groceries);
     Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
@@ -65,14 +79,15 @@ class UserActions {
     for (String ingredient in ingredients) {
       updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
     }
-    User updatedUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
-    await UserDB().updateUser(updatedUser);
+    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
+    await UserDB().updateUser(currentUser);
+    updateUser(currentUser);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Recipe scheduled for $date!')),
     );
   }
 
-  Future<String?> _selectDate() async {
+  Future<String?> selectDate() async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),

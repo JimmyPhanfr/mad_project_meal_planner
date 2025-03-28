@@ -20,111 +20,47 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   late User _currentUser;
+  late UserActions userActions;
 
   @override
   void initState() {
     super.initState();
     _currentUser = widget.user;
     _loadRecipes();
+    userActions = UserActions(
+      context: context, 
+      currentUser: widget.user, 
+      recipes: _recipes, 
+      updateUser: updateUser,
+      updateFilteredRecipes: updateFilteredRecipes,
+    );
   }
 
   _loadRecipes() async {
     await RecipeDB.instance.populateDatabase(recipes);
     final allRecipes = await RecipeDB.instance.getAllRecipes();
     setState(() {
-      _recipes = allRecipes;
-      _filteredRecipes = allRecipes;
+      //_recipes = allRecipes;
+      //_filteredRecipes = allRecipes;
+      userActions.recipes = allRecipes;
+      userActions.filterRecipes('');
     });
   }
 
-  _filterRecipes(String query) {
-    final filtered = recipes.where((recipe) {
-      final tags = List<String>.from(jsonDecode(recipe['tags']));
-      final searchQuery = query.toLowerCase();
-      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
-    }).toList();
-    setState(() {
-      _filteredRecipes = filtered;
-    });
-  }
-
-  _addToFavorites(Map<String, dynamic> recipe) async {
-    List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
-    if (!updatedFavorites.contains(recipe['id'].toString())) {
-      updatedFavorites.add(recipe['id'].toString());
-      User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(updatedUser);
-      setState(() {
-        _currentUser = updatedUser;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${recipe['title']} added to favorites!')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${recipe['title']} is already in favorites!')),
-      );
-    }
-  }
-
-  _removeFromFavorites(Map<String, dynamic> recipe) async {
-    List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
-    if (updatedFavorites.contains(recipe['id'].toString())) {
-      updatedFavorites.remove(recipe['id'].toString());
-      User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(updatedUser);
-      setState(() {
-        _currentUser = updatedUser;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${recipe['title']} removed from favorites!')),
-      );
-    }
-  }
-
-  _addToTodorecipes(String recipeId, String date) async {
-    List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
-    Map<String, int>? updatedGroceries = Map.from(_currentUser.groceries);
-    Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
-    if (recipe.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Recipe not found!')),
-      );
-      return;
-    }
-    updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients']));
-    for (String ingredient in ingredients) {
-      updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
-    }
-    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
-    await UserDB().updateUser(updatedUser);
+  void updateUser(User updatedUser) {
     setState(() {
       _currentUser = updatedUser;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Recipe scheduled for $date!')),
-    );
   }
 
-  Future<String?> _selectDate(BuildContext context) async {
-    DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (selectedDate != null) {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
-    }
-    return null;
+  void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
+    setState(() {
+      _filteredRecipes = newFilteredRecipes;
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-    //UserActions userActions = UserActions(context: context, currentUser: _currentUser, recipes: recipes);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -132,7 +68,11 @@ class _SearchPageState extends State<SearchPage> {
           child: SizedBox(
             height: 40, 
             child: TextField(
-              onChanged: _filterRecipes,
+              onChanged: (query) {
+                setState(() {
+                  userActions.filterRecipes(query);
+                });
+              },
               decoration: InputDecoration(
                 hintText: "Search recipes...",
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
@@ -247,9 +187,13 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                               onPressed: () {
                                 if (isFavorite) {
-                                  _removeFromFavorites(recipe);
+                                  setState(() {
+                                    userActions.removeFromFavorites(recipe);
+                                  });
                                 } else {
-                                  _addToFavorites(recipe);
+                                  setState(() {
+                                    userActions.addToFavorites(recipe);
+                                  });
                                 }
                               },
                             ),
@@ -263,9 +207,11 @@ class _SearchPageState extends State<SearchPage> {
                                 color: Colors.white,
                               ),
                               onPressed: () async {
-                                String? selectedDate = await _selectDate(context);
+                                String? selectedDate = await userActions.selectDate();
                                 if (selectedDate != null) {
-                                  _addToTodorecipes(recipe['id'].toString(), selectedDate);
+                                  setState(() {
+                                    userActions.addToTodorecipes(recipe['id'].toString(), selectedDate);
+                                  });
                                 }
                               },
                             ),

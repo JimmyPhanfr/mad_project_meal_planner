@@ -10,6 +10,7 @@ import 'search_page.dart';
 import 'planner_page.dart';
 import 'accounts_page.dart';
 import 'favorite_page.dart';
+import 'user_actions.dart';
 
 class FavoritePage extends StatefulWidget {
   final User currentUser;
@@ -25,6 +26,7 @@ class _FavoritePageState extends State<FavoritePage> {
   List<Map<String, dynamic>> favoriteRecipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   late User _currentUser;
+  late UserActions userActions;
 
 
   @override
@@ -32,70 +34,24 @@ class _FavoritePageState extends State<FavoritePage> {
     super.initState();
     _currentUser = widget.currentUser;
     favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
+    userActions = UserActions(
+      context: context, 
+      currentUser: widget.currentUser, 
+      recipes: favoriteRecipes, 
+      updateUser: updateUser,
+      updateFilteredRecipes: updateFilteredRecipes,
+    );
   }
 
-  _removeFromFavorites(Map<String, dynamic> recipe) async {
-    List<String> updatedFavorites = List<String>.from(_currentUser.favorites);
-    if (updatedFavorites.contains(recipe['id'].toString())) {
-      updatedFavorites.remove(recipe['id'].toString());
-      User updatedUser = _currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(updatedUser);
-      setState(() {
-        _currentUser = updatedUser;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${recipe['title']} removed from favorites!')),
-      );
-    }
-  }
-
-  _addToTodorecipes(String recipeId, String date) async {
-    List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
-    Map<String, int>? updatedGroceries = Map.from(_currentUser.groceries);
-    Map<String, dynamic>? recipe = favoriteRecipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
-    if (recipe.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Recipe not found!')),
-      );
-      return;
-    }
-    updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients']));
-    for (String ingredient in ingredients) {
-      updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
-    }
-    User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
-    await UserDB().updateUser(updatedUser);
+  void updateUser(User updatedUser) {
     setState(() {
       _currentUser = updatedUser;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Recipe scheduled for $date!')),
-    );
   }
 
-  Future<String?> _selectDate(BuildContext context) async {
-    DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (selectedDate != null) {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
-    }
-    return null;
-  }
-
-  _filterRecipes(String query) {
-    final filtered = favoriteRecipes.where((recipe) {
-      final tags = List<String>.from(jsonDecode(recipe['tags']));
-      final searchQuery = query.toLowerCase();
-      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
-    }).toList();
+  void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
     setState(() {
-      _filteredRecipes = filtered;
+      _filteredRecipes = newFilteredRecipes;
     });
   }
 
@@ -108,7 +64,11 @@ class _FavoritePageState extends State<FavoritePage> {
           child: SizedBox(
             height: 40,
             child: TextField(
-              onChanged: _filterRecipes,
+              onChanged: (query) {
+                setState(() {
+                  userActions.filterRecipes(query);
+                });
+              },
               decoration: InputDecoration(
                 hintText: "Search favorite recipes...",
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
@@ -214,7 +174,11 @@ class _FavoritePageState extends State<FavoritePage> {
                                 isFavorite ? Icons.favorite : Icons.favorite_border,
                                 color: isFavorite ? Colors.red : Colors.white,
                               ),
-                              onPressed: () => _removeFromFavorites(recipe),
+                              onPressed: () { 
+                                setState(() {
+                                    userActions.removeFromFavorites(recipe);
+                                });
+                              }
                             ),
                           ),
                           Positioned(
@@ -223,9 +187,11 @@ class _FavoritePageState extends State<FavoritePage> {
                             child: IconButton(
                               icon: const Icon(Icons.access_alarm_outlined, color: Colors.white),
                               onPressed: () async {
-                                String? selectedDate = await _selectDate(context);
+                                String? selectedDate = await userActions.selectDate();
                                 if (selectedDate != null) {
-                                  _addToTodorecipes(recipe['id'], selectedDate);
+                                  setState(() {
+                                    userActions.addToTodorecipes(recipe['id'].toString(), selectedDate);
+                                  });
                                 }
                               },
                             ),
