@@ -25,7 +25,6 @@ class _FavoritePageState extends State<FavoritePage> {
   List<Map<String, dynamic>> favoriteRecipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   late User _currentUser;
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
 
   @override
@@ -52,19 +51,18 @@ class _FavoritePageState extends State<FavoritePage> {
 
   _addToTodorecipes(String recipeId, String date) async {
     List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
-    List<String> updatedGroceries = List.from(_currentUser.groceries);
-    Map<String, dynamic>? recipe = favoriteRecipes.firstWhere((recipe) => recipe['id'] == int.parse(recipeId), orElse: () => {});
-    if (recipe == null) {
+    Map<String, int>? updatedGroceries = Map.from(_currentUser.groceries);
+    Map<String, dynamic>? recipe = favoriteRecipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
+    if (recipe.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: Recipe not found!')),
       );
       return;
     }
     updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    for (String ingredient in recipe['ingredients']) {
-      if (!updatedGroceries.contains(ingredient)) {
-        updatedGroceries.add(ingredient);
-      }
+    List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients']));
+    for (String ingredient in ingredients) {
+      updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
     }
     User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
     await UserDB().updateUser(updatedUser);
@@ -227,7 +225,7 @@ class _FavoritePageState extends State<FavoritePage> {
                               onPressed: () async {
                                 String? selectedDate = await _selectDate(context);
                                 if (selectedDate != null) {
-                                  _addToTodorecipes(recipe['id'].toString(), selectedDate);
+                                  _addToTodorecipes(recipe['id'], selectedDate);
                                 }
                               },
                             ),

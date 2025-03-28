@@ -7,11 +7,6 @@ import 'user.dart';
 //import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
-import 'home_page.dart';
-import 'favorite_page.dart';
-import 'planner_page.dart';
-import 'accounts_page.dart';
-
 class SearchPage extends StatefulWidget {
   final User user;
   const SearchPage({Key? key, required this.user}) : super(key: key); 
@@ -24,7 +19,6 @@ class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   late User _currentUser;
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   @override
   void initState() {
@@ -44,9 +38,9 @@ class _SearchPageState extends State<SearchPage> {
 
   _filterRecipes(String query) {
     final filtered = _recipes.where((recipe) {
-      final tags = List<String>.from(jsonDecode(recipe['tags']));
+      final title = recipe['title'].toLowerCase();
       final searchQuery = query.toLowerCase();
-      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
+      return title.contains(searchQuery);
     }).toList();
     setState(() {
       _filteredRecipes = filtered;
@@ -89,19 +83,18 @@ class _SearchPageState extends State<SearchPage> {
 
   _addToTodorecipes(String recipeId, String date) async {
     List<Map<String, String>> updatedTodorecipes = List.from(_currentUser.todorecipes);
-    List<String> updatedGroceries = List.from(_currentUser.groceries);
-    Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'] == int.parse(recipeId), orElse: () => {});
-    if (recipe == null) {
+    Map<String, int>? updatedGroceries = Map.from(_currentUser.groceries);
+    Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
+    if (recipe.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: Recipe not found!')),
       );
       return;
     }
     updatedTodorecipes.add({'recipeId': recipeId, 'date': date});
-    for (String ingredient in recipe['ingredients']) {
-      if (!updatedGroceries.contains(ingredient)) {
-        updatedGroceries.add(ingredient);
-      }
+    List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients']));
+    for (String ingredient in ingredients) {
+      updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
     }
     User updatedUser = _currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
     await UserDB().updateUser(updatedUser);
@@ -126,6 +119,7 @@ class _SearchPageState extends State<SearchPage> {
     }
     return null;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +263,7 @@ class _SearchPageState extends State<SearchPage> {
                               onPressed: () async {
                                 String? selectedDate = await _selectDate(context);
                                 if (selectedDate != null) {
-                                  _addToTodorecipes(recipe['id'], selectedDate);
+                                  _addToTodorecipes(recipe['id'].toString(), selectedDate);
                                 }
                               },
                             ),
@@ -283,55 +277,6 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: Container(
-        height: 60.0,
-        width: double.infinity,
-        color: Colors.white,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.home),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
-              },
-              icon: Icon(Icons.favorite),
-            ),
-            Container(
-              height: 40,
-              width: 40,
-              decoration: new BoxDecoration(
-                color: Colors.lightGreenAccent,
-                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
-                },
-                icon: Icon(Icons.search),
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.list),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.person),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -367,7 +312,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve over rice with pickled ginger, green onions, and shichimi to taste.'
     ]),
     'image' : 'assets/images/gyudon.webp',
-    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese', 'gyudon']),
+    'tags' : jsonEncode(['beef', 'egg', 'rice', 'asian', 'japanese']),
   },
   {
     'id': 2,
@@ -393,7 +338,7 @@ final List<Map<String, dynamic>> recipes = [
       'Serve hot with rice and peas.'
     ]),
     'image' : 'assets/images/oxtail.jpg',
-    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans', 'garlic', 'pepper']),
+    'tags' : jsonEncode(['oxtail', 'jamaican', 'caribbean', 'beans']),
   },
   {
     'id': 3,
@@ -434,7 +379,7 @@ final List<Map<String, dynamic>> recipes = [
       'Boom! Done! Jamaican curry chicken is ready to serve! Looks wonderful, doesn\'t it? I\'m sure your kitchen smells awesome.',
     ]),
     'image' : 'assets/images/curry.jpg',
-    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean', 'onion']),
+    'tags' : jsonEncode(['chicken', 'curry', 'potato', 'jamaican', 'caribbean']),
   },
   {
     'id': 4,
@@ -460,7 +405,7 @@ final List<Map<String, dynamic>> recipes = [
       'Slide broth, egg, and chicken out on top of a bowl of rice. Sprinkle with scallions and serve.',
     ]),
     'image' : 'assets/images/katsudon.jpg',
-    'tags' : jsonEncode(['pork', 'egg', 'rice', 'asian', 'japanese', 'katsudon', 'onion']),
+    'tags' : jsonEncode(['chicken', 'egg', 'rice', 'asian', 'japanese']),
   },
   {
     'id': 5,
@@ -486,7 +431,7 @@ final List<Map<String, dynamic>> recipes = [
       'Let pasta rest for a few minutes, tossing frequently until the carbonara sauce thickens. Serve immediately with a sprinkle of fresh parsley.',
     ]),
     'image' : 'assets/images/carbonara.jpg',
-    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork', 'carbonara', 'garlic', 'parsley']),
+    'tags' : jsonEncode(['bacon', 'egg', 'pasta', 'parmesan', 'pork']),
   },
   {
     'id' : 6,

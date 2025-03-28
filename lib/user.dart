@@ -7,7 +7,7 @@ class User {
   final String dateOfBirth;
   final String password;
   final List<String> favorites;
-  final List<String> groceries;
+  final Map<String, int> groceries;
   final List<Map<String, String>> todorecipes; 
 
   User({
@@ -45,7 +45,7 @@ class User {
       dateOfBirth: map['date_of_birth'],
       password: map['password'],
       favorites: List<String>.from(jsonDecode(map['favorites'])),
-      groceries: List<String>.from(jsonDecode(map['groceries'])),
+      groceries: Map<String, int>.from(jsonDecode(map['groceries'])),
       todorecipes: List<Map<String, String>>.from(
         jsonDecode(map['todorecipes']).map((item) => Map<String, String>.from(item)),
       ),
@@ -59,7 +59,7 @@ class User {
     String? dateOfBirth,
     String? password,
     List<String>? favorites,
-    List<String>? groceries,
+    Map<String, int>? groceries,
     List<Map<String, String>>? todorecipes,
   }) {
     return User(

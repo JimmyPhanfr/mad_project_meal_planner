@@ -152,7 +152,7 @@ class RegisterPageState extends State<RegisterPage> {
                             dateOfBirth: _textControllerDateOfBirth.text,
                             password: _textControllerPassword.text.trim(),
                             favorites: [],
-                            groceries: [],
+                            groceries: {},
                             todorecipes: [],
                           );
                           int result = await userDb.registerUser(newUser);
