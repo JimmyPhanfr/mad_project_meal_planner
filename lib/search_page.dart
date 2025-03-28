@@ -6,6 +6,7 @@ import 'user_db.dart';
 import 'user.dart';
 //import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'user_actions.dart';
 
 class SearchPage extends StatefulWidget {
   final User user;
@@ -37,10 +38,10 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   _filterRecipes(String query) {
-    final filtered = _recipes.where((recipe) {
-      final title = recipe['title'].toLowerCase();
+    final filtered = recipes.where((recipe) {
+      final tags = List<String>.from(jsonDecode(recipe['tags']));
       final searchQuery = query.toLowerCase();
-      return title.contains(searchQuery);
+      return tags.any((tag) => tag.toLowerCase().contains(searchQuery));
     }).toList();
     setState(() {
       _filteredRecipes = filtered;
@@ -123,6 +124,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    //UserActions userActions = UserActions(context: context, currentUser: _currentUser, recipes: recipes);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
