@@ -36,9 +36,8 @@ class UserActions {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
     if (!updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.add(recipe['id'].toString());
-      User updatedUser = currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(updatedUser);
-      currentUser = updatedUser;
+      currentUser = currentUser.copyWith(favorites: updatedFavorites);
+      await UserDB().updateUser(currentUser);
       updateUser(currentUser);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} added to favorites!')),
@@ -54,9 +53,8 @@ class UserActions {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
     if (updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.remove(recipe['id'].toString());
-      User updatedUser = currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(updatedUser);
-      currentUser = updatedUser;
+      currentUser = currentUser.copyWith(favorites: updatedFavorites);
+      await UserDB().updateUser(currentUser);
       updateUser(currentUser);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} removed from favorites!')),
