@@ -44,6 +44,16 @@ class RecipeDB {
     return await db.query('recipes');
   }
 
+  Future<List<Map<String, dynamic>>> getRecipes(List<int> recipeIds) async {
+    final db = await instance.database;
+    final List<Map<String, dynamic>> recipes = await db.query(
+      'recipes',
+      where: 'id IN (${List.filled(recipeIds.length, '?').join(',')})',
+      whereArgs: recipeIds,
+    );
+    return recipes;
+  }
+
   Future<int> getDatabaseRecipeCount() async {
     final db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recipes')) ?? 0;

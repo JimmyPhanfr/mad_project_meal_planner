@@ -34,13 +34,27 @@ class _FavoritePageState extends State<FavoritePage> {
     super.initState();
     _currentUser = widget.currentUser;
     favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
+    _loadRecipes();
     userActions = UserActions(
       context: context, 
-      currentUser: widget.currentUser, 
+      currentUser: _currentUser, 
       recipes: favoriteRecipes, 
       updateUser: updateUser,
       updateFilteredRecipes: updateFilteredRecipes,
     );
+    userActions.filterRecipes('');
+  }
+
+  _loadRecipes() async {
+    //await RecipeDB.instance.populateDatabase(recipes);
+
+    final allRecipes = await RecipeDB.instance.getRecipes(
+      favoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
+    );
+    setState(() {
+      userActions.recipes = allRecipes;
+      userActions.filterRecipes('');
+    });
   }
 
   void updateUser(User updatedUser) {
