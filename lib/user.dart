@@ -1,5 +1,9 @@
  import 'dart:convert';
 
+/*
+User class that stores and does conversion of user object to be stored and retrieved from the User Database
+*/
+
 class User {
   final int id;
   final String name;
@@ -21,6 +25,7 @@ class User {
     required this.todorecipes,
   });
 
+  //Method that converts the User object's fields into a format easily stored in the User Database
   Map<String, dynamic> toMap() {
     final map = {
       'name': name,
@@ -37,6 +42,7 @@ class User {
     return map;
   }
 
+  //Method that converts the data retrieved from the User Database into the User class format
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
@@ -52,6 +58,7 @@ class User {
     );
   }
 
+  //Method to create a copy of a User object but with certain fields updated
   User copyWith({
     int? id,
     String? name,

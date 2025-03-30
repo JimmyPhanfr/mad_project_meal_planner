@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'user_db.dart';
 import 'register_page.dart';
 import 'favorite_page.dart';
+import 'load_recipes.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -24,10 +25,10 @@ class _LoginPageState extends State<LoginPage> {
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       bool isValid = await _validateUser(_emailController.text.trim(), _passwordController.text.trim());
-
       if (isValid) {
         final user = await UserDB().getUser(_emailController.text.trim(), _passwordController.text.trim());
         if (user != null) {
+          await LoadRecipes.instance.loadRecipes();
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
           Navigator.pushReplacement(
             context,

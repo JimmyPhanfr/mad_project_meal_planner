@@ -4,6 +4,10 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'user.dart'; 
 
+/*
+User Database, stores the information from the User Class
+*/
+
 class UserDB {
   static final UserDB _instance = UserDB._internal();
   factory UserDB() => _instance;
@@ -16,6 +20,7 @@ class UserDB {
     _database = await _initDatabase();
     return _database!;
   }
+
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'users.db');
@@ -46,10 +51,12 @@ class UserDB {
     );
   }
 
+  //Hashes the user entered password, database stores the hashed version of the password
   String _hashPassword(String password) {
     return sha256.convert(utf8.encode(password)).toString();
   }
 
+  //inserts the new user into the database
   Future<int> registerUser(User user) async {
     final db = await database;
     Map<String, dynamic> userMap = user.toMap();
@@ -61,6 +68,7 @@ class UserDB {
     );
   }
 
+  //gets all users, for debugging and admin purposes
   Future<List<User>> getUsers() async {
     final db = await database;
     final List<Map<String, dynamic>> userMaps = await db.query('users');
@@ -69,6 +77,7 @@ class UserDB {
     });
   }
 
+  //finds the user with the matching email and password in the database, returns the matching User object, otherwise returns nothing
   Future<User?> getUser(String email, String password) async {
     final db = await database;
     final String hashedPassword = _hashPassword(password);
@@ -86,21 +95,7 @@ class UserDB {
     return null;
   }
 
-  Future<User?> retrieveUser(User user) async {
-    final db = await database;
-    final String hashedPassword = _hashPassword(user.password);
-    final List<Map<String, dynamic>> result = await db.query(
-      'users',
-      where: 'email = ? AND password = ?',
-      whereArgs: [user.email, hashedPassword],
-      limit: 1,
-    );
-    if (result.isNotEmpty) {
-      return User.fromMap(result.first);
-    }
-    return null;
-  }
-
+  //updates a user within the database, usually used for updating user's favorites, todorecipes and groceries list
   Future<int> updateUser(User user) async {
     final db = await database;
     Map<String, dynamic> values = user.toMap();
@@ -120,6 +115,7 @@ class UserDB {
     }
   }
 
+  //updates user's name
   void updateName(User user, String name) async {
     final db = await database;
     // Map<String, dynamic> values = user.toMap();
@@ -134,6 +130,7 @@ class UserDB {
     );
   }
 
+  //updates user's email
   void updateEmail(User user, String email) async {
     final db = await database;
     // Map<String, dynamic> values = user.toMap();
@@ -148,6 +145,7 @@ class UserDB {
     );
   }
 
+  //updates user's date of birth
   void updateDOB(User user, String dob) async {
     final db = await database;
     // Map<String, dynamic> values = user.toMap();
@@ -162,14 +160,16 @@ class UserDB {
     );
   }
 
+  //updates user's password
   void updatePassword(User user, String password) async {
     final db = await database;
     // Map<String, dynamic> values = user.toMap();
     print("the new pass is $password");
+    final String hashedPassword = _hashPassword(password);
     await db.update(
       'users', 
       {
-        'password': password,
+        'password': hashedPassword,
       },
       where: 'id = ?',
       whereArgs: [user.id],
