@@ -1,4 +1,4 @@
- import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
@@ -118,5 +118,61 @@ class UserDB {
     if (db != null) {
       await db.close();
     }
+  }
+
+  void updateName(User user, String name) async {
+    final db = await database;
+    // Map<String, dynamic> values = user.toMap();
+
+    await db.update(
+      'users', 
+      {
+        'name': name,
+      },
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  void updateEmail(User user, String email) async {
+    final db = await database;
+    // Map<String, dynamic> values = user.toMap();
+
+    await db.update(
+      'users', 
+      {
+        'email': email,
+      },
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  void updateDOB(User user, String dob) async {
+    final db = await database;
+    // Map<String, dynamic> values = user.toMap();
+
+    await db.update(
+      'users', 
+      {
+        'date_of_birth': dob,
+      },
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  void updatePassword(User user, String password) async {
+    final db = await database;
+    // Map<String, dynamic> values = user.toMap();
+
+    await db.update(
+      'users', 
+      {
+        'password': password,
+      },
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
   }
 }

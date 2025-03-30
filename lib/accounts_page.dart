@@ -12,6 +12,7 @@ import 'planner_page.dart';
 import 'accounts_page.dart';
 
 import 'textbox.dart';
+import 'accounts_edit_fields.dart';
 
 class AccountsPage extends StatefulWidget {
   final User user;
@@ -24,77 +25,12 @@ class AccountsPage extends StatefulWidget {
 
 class _AccountsPageState extends State<AccountsPage> {
   late User _currentUser;
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
-  // edit field
-  Future<void> editField(String field) async {
-      String newValue = "";
-      await showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => AlertDialog(
-          backgroundColor: Colors.grey[900],
-          title: Text(
-            "Edit $field", 
-            style: const TextStyle(color: Colors.white),
-          ), 
-          content: TextField(
-            autofocus: true,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: "Enter new $field",
-              hintStyle: TextStyle(color: Colors.grey),
-            ),
-            onChanged: (value) {
-              newValue = value;
-            },
-          ),
-          actions: [
-            // cancel button
-            TextButton(
-              child: Text(
-                "Cancel",
-                style: TextStyle(color: Colors.white),
-                ),
-              onPressed: () => Navigator.pop(context),
-            ),
-
-            // save button
-            TextButton(
-              child: Text(
-                "Save",
-                style: TextStyle(color: Colors.white),
-                ),
-              onPressed: () => Navigator.of(context).pop(newValue),
-            ),
-          ],
-        ),
-      );
-
-      // update using db functions
-      if (newValue.trim().length > 0) {
-        // only update if there is something in the textfield
-      }
-  }
-
+  // DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  
   @override
   void initState() {
     super.initState();
     _currentUser = widget.user;
-  }
-
-  Future<String?> _selectDate(BuildContext context) async {
-    DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (selectedDate != null) {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
-    }
-    return null;
   }
 
   @override
@@ -133,25 +69,38 @@ class _AccountsPageState extends State<AccountsPage> {
                   MyTextBox(
                     text: _currentUser.name, 
                     sectionName: "Name",
-                    onPressed: () => editField('name'),
+                    onPressed: () {
+                      setState(() {
+                        editNameField(context, _currentUser);
+                        _currentUser = widget.user;
+                      });
+                    }
                   ),
-
                   MyTextBox(
                     text: _currentUser.email, 
                     sectionName: "Email",
-                    onPressed: () => editField('email'),
+                    // onPressed: () => editEmailField(context, _currentUser),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Email not allowed to be changed."),
+                        ),
+                      );
+                    },
                   ),
-
                   MyTextBox(
                     text: _currentUser.dateOfBirth, 
                     sectionName: "Date of Birth",
-                    onPressed: () => editField('dateofBirth'),
+                    onPressed: () => editDOBField(context, _currentUser),
                   ),
-
                   MyTextBox(
-                    text: _currentUser.password, 
+                    text: "User password hidden for security.",
                     sectionName: "Password",
-                    onPressed: () => editField('Password'),
+                    onPressed: () => editPasswordField(context, _currentUser),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 16, bottom: 6),
+                    child: Text("May have to re-login to see changes.", style: TextStyle(fontSize: 16),),
                   ),
                 ],
               ),
