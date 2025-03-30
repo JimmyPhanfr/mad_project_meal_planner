@@ -24,9 +24,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      bool isValid = await _validateUser(_emailController.text.trim(), _passwordController.text.trim());
+      bool isValid = await _validateUser(_emailController.text.trim().toLowerCase(), _passwordController.text.trim());
       if (isValid) {
-        final user = await UserDB().getUser(_emailController.text.trim(), _passwordController.text.trim());
+        final user = await UserDB().getUser(_emailController.text.trim().toLowerCase(), _passwordController.text.trim());
         if (user != null) {
           await LoadRecipes.instance.loadRecipes();
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
@@ -47,7 +47,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: const Text('Meal Prep App by Team Cook', style: TextStyle(color: Colors.white),),
+        centerTitle: true,
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
@@ -72,17 +73,19 @@ class _LoginPageState extends State<LoginPage> {
               child: Form(
                 key: _formKey,
                 child: Column(
+                  spacing: 12.0,
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Login", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 15.0),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: const Text("Login", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                    ),
                     TextFormField(
                       controller: _emailController,
                       validator: (value) => value == null || value.isEmpty ? 'Please enter your email' : null,
                       decoration: const InputDecoration(hintText: "Email", border: OutlineInputBorder()),
                     ),
-                    const SizedBox(height: 15.0),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _isPasswordObscure,
@@ -96,21 +99,30 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15.0),
-                    Center(
-                      child: ElevatedButton(
+                    // Center(
+                    //   child: ElevatedButton(
+                    //     onPressed: () { 
+                    //       _login(context);
+                    //     },
+                    //     child: const Text('Login'),
+                    //   ),
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+                          },
+                          child: const Text("Don't have an account? Register"),
+                        ),
+                        ElevatedButton(
                         onPressed: () { 
                           _login(context);
                         },
                         child: const Text('Login'),
                       ),
-                    ),
-                    const SizedBox(height: 15.0),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
-                      },
-                      child: const Text("Don't have an account? Register"),
+                      ],
                     ),
                   ],
                 ),
