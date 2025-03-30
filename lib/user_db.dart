@@ -115,11 +115,8 @@ class UserDB {
     }
   }
 
-  //updates user's name
   void updateName(User user, String name) async {
     final db = await database;
-    // Map<String, dynamic> values = user.toMap();
-
     await db.update(
       'users', 
       {
@@ -130,11 +127,8 @@ class UserDB {
     );
   }
 
-  //updates user's email
   void updateEmail(User user, String email) async {
     final db = await database;
-    // Map<String, dynamic> values = user.toMap();
-
     await db.update(
       'users', 
       {
@@ -145,11 +139,8 @@ class UserDB {
     );
   }
 
-  //updates user's date of birth
   void updateDOB(User user, String dob) async {
     final db = await database;
-    // Map<String, dynamic> values = user.toMap();
-
     await db.update(
       'users', 
       {
@@ -160,11 +151,8 @@ class UserDB {
     );
   }
 
-  //updates user's password
   void updatePassword(User user, String password) async {
     final db = await database;
-    // Map<String, dynamic> values = user.toMap();
-    print("the new pass is $password");
     final String hashedPassword = _hashPassword(password);
     await db.update(
       'users', 
