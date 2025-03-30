@@ -10,6 +10,9 @@ class DetailScreen extends StatefulWidget {
   final String instructionsJson;
   final String image;
   User user;
+  final Function(int, bool) onFavoriteChanged;
+  final Function(User) updateUser;
+  final Function(List<Map<String, dynamic>>) updateFilteredRecipes;
 
   DetailScreen({super.key, 
     required this.id,
@@ -18,6 +21,9 @@ class DetailScreen extends StatefulWidget {
     required this.instructionsJson,
     required this.image,
     required this.user,
+    required this.onFavoriteChanged,
+    required this.updateUser,
+    required this.updateFilteredRecipes,
   });
 
   @override
@@ -41,42 +47,30 @@ class _DetailScreenState extends State<DetailScreen> {
       context: context, 
       currentUser: widget.user, 
       recipes: [], 
-      updateUser: updateUser,
-      updateFilteredRecipes: updateFilteredRecipes,
+      updateUser: widget.updateUser,
+      updateFilteredRecipes: widget.updateFilteredRecipes,
     );
     recipe = {
       'id' : widget.id,
       'title' : widget.title,
     };
-    userActions.filterRecipes('');
     isFavorited = widget.user.favorites.contains(widget.id.toString());
-  }
-
-  //updates the user information for this page when a user action is done
-  void updateUser(User updatedUser) {
-    setState(() {
-      widget.user = updatedUser;
-    });
-  }
-
-  //updates the loaded list of filtered recipes for this page when a search is done
-  void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
-    setState(() {
-      _filteredRecipes = newFilteredRecipes;
-    });
   }
 
   void toggleFavorite() {
     setState(() {
+      print(isFavorited);
       isFavorited = !isFavorited;
       if (isFavorited) {
         userActions.addToFavorites(recipe);
       } else {
         userActions.removeFromFavorites(recipe);
       }
+      widget.onFavoriteChanged(widget.id, isFavorited);
+      widget.updateUser(widget.user);
+      print(isFavorited);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +99,7 @@ class _DetailScreenState extends State<DetailScreen> {
               color: Colors.black.withOpacity(0.8),
             ),
           ),
-          Padding(
+          Padding( //lists the details of the recipe such as ingredients and instructions
             padding: EdgeInsets.all(20.0),
             child: SingleChildScrollView(
               child: Column(
@@ -161,7 +155,7 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ElevatedButton.icon(
+            ElevatedButton.icon( //for user to favorite or unfavorite the recipe
               onPressed: toggleFavorite,
               icon: Icon(
                 isFavorited ? Icons.favorite : Icons.favorite_border,
@@ -179,8 +173,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 if (selectedDate != null) {
                   setstate() {
                     userActions.addToTodorecipes(widget.id.toString(), selectedDate);
+                    widget.updateUser(widget.user);
                   }
-                print('Added to To-Do Recipes');
                 }
               },
               icon: Icon(Icons.access_alarm_outlined, color: Colors.white),

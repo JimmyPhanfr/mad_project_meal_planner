@@ -6,13 +6,13 @@ User class that stores and does conversion of user object to be stored and retri
 
 class User {
   final int id;
-  final String name;
-  final String email;
-  final String dateOfBirth;
-  final String password;
-  final List<String> favorites;
-  final Map<String, int> groceries;
-  final List<Map<String, String>> todorecipes; 
+  String name;
+  String email;
+  String dateOfBirth;
+  String password;
+  List<String> favorites;
+  Map<String, int> groceries;
+  List<Map<String, String>> todorecipes; 
 
   User({
     required this.id,

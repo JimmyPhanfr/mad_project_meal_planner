@@ -7,8 +7,8 @@ import 'user.dart';
 import 'user_actions.dart';
 
 class SearchPage extends StatefulWidget {
-  final User user;
-  const SearchPage({Key? key, required this.user}) : super(key: key); 
+  User user;
+  SearchPage({Key? key, required this.user}) : super(key: key); 
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -17,13 +17,13 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
-  late User _currentUser;
+  List<Map<String, dynamic>> favoriteRecipes =[];
+  List<String> favoriteRecipeIds = [];
   late UserActions userActions;
 
   @override
   void initState() {
     super.initState();
-    _currentUser = widget.user;
     _loadRecipes();
     userActions = UserActions(
       context: context, 
@@ -32,6 +32,7 @@ class _SearchPageState extends State<SearchPage> {
       updateUser: updateUser,
       updateFilteredRecipes: updateFilteredRecipes,
     );
+    favoriteRecipeIds = List<String>.from(widget.user.favorites);
   }
 
   //loads the list of all recipes from the database
@@ -41,12 +42,15 @@ class _SearchPageState extends State<SearchPage> {
       userActions.recipes = allRecipes; 
       userActions.filterRecipes(''); //since the search page on default shows the list of filteredrecipes, this loads all the recipes into the filtered recipes
     });
+    favoriteRecipes = await RecipeDB.instance.getRecipes(
+      favoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
+    );
   }
 
   //updates the user information for this page when a user action is done
   void updateUser(User updatedUser) {
     setState(() {
-      _currentUser = updatedUser;
+      widget.user = updatedUser;
     });
   }
 
@@ -54,6 +58,18 @@ class _SearchPageState extends State<SearchPage> {
   void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
     setState(() {
       _filteredRecipes = newFilteredRecipes;
+    });
+  }
+
+
+  void updateFavoriteStatus(int recipeId, bool isFavorited) async {
+    List<String> updatedFavoriteRecipeIds = List<String>.from(widget.user.favorites);
+    List<Map<String, dynamic>> updatedFavoriteRecipes = await RecipeDB.instance.getRecipes(
+      updatedFavoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
+    );
+    setState(() async {
+      favoriteRecipeIds = updatedFavoriteRecipeIds;
+      favoriteRecipes = updatedFavoriteRecipes;
     });
   }
 
@@ -120,7 +136,7 @@ class _SearchPageState extends State<SearchPage> {
               itemCount: _filteredRecipes.length,
               itemBuilder: (context, index) { //lists all the recipes in a tile view
                 final recipe = _filteredRecipes[index]; 
-                final isFavorite = _currentUser.favorites.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
+                final isFavorite = widget.user.favorites.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -132,7 +148,10 @@ class _SearchPageState extends State<SearchPage> {
                           ingredientsJson: recipe['ingredients'],
                           instructionsJson: recipe['instructions'],
                           image: recipe['image'],
-                          user: _currentUser,
+                          user: widget.user,
+                          onFavoriteChanged: updateFavoriteStatus,
+                          updateUser: updateUser,
+                          updateFilteredRecipes: updateFilteredRecipes,
                         ),
                       ),
                     );
@@ -235,7 +254,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Search"),
+      bottomNavigationBar: MyNavBar(user: widget.user, currentpage: "Search"),
     );
   }
 }

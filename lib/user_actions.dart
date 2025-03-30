@@ -75,17 +75,22 @@ class UserActions {
       );
       return;
     }
+    print('adding recipe to todo list');
     updatedTodorecipes.add({'recipeId': recipeId, 'date': date}); 
     List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients'])); 
+    print('added recipe to todo list, adding recipe ingredients');
     for (String ingredient in ingredients) { //adds the ingredient to the grocery list, increments the grocery quantity by one if it exists, otherwise a default of 1 is put
       updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
     }
+    print('added recipe ingredients, updating user');
     currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
     await UserDB().updateUser(currentUser);
     updateUser(currentUser);
+    print('Updated user, show snackbar');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Recipe scheduled for $date!')),
     );
+    print("should have shown snackbar");
   }
 
   //removes a recipe from the user's list of todo recipes, also removes the recipe's ingredients from the user's grocery list

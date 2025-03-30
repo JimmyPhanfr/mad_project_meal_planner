@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'login_page.dart';
 //Below packages are for deleting the dbs to restart them
-/*
+
 import 'user_db.dart';
 import 'recipe_db.dart';
 import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-*/
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

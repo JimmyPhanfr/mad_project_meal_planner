@@ -66,6 +66,17 @@ class _FavoritePageState extends State<FavoritePage> {
     });
   }
 
+  void updateFavoriteStatus(int recipeId, bool isFavorited) async {
+    List<String> updatedFavoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
+    List<Map<String, dynamic>> updatedFavoriteRecipes = await RecipeDB.instance.getRecipes(
+      updatedFavoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
+    );
+    setState(() {
+      favoriteRecipeIds = updatedFavoriteRecipeIds;
+    favoriteRecipes = updatedFavoriteRecipes;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,6 +153,9 @@ class _FavoritePageState extends State<FavoritePage> {
                           instructionsJson: recipe['instructions'],
                           image: recipe['image'],
                           user: widget.currentUser,
+                          onFavoriteChanged: updateFavoriteStatus,
+                          updateUser: updateUser,
+                          updateFilteredRecipes: updateFilteredRecipes,
                         ),
                       ),
                     );
