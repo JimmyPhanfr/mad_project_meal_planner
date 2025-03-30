@@ -1,11 +1,9 @@
-import 'package:mealprep/login_page.dart';
 import 'package:mealprep/navbar.dart';
-
 import 'package:flutter/material.dart';
 import 'user.dart';
-
 import 'textbox.dart';
 import 'accounts_edit_fields.dart';
+import 'logout_confirm.dart';
 
 class AccountsPage extends StatefulWidget {
   final User user;
@@ -33,7 +31,7 @@ class _AccountsPageState extends State<AccountsPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],

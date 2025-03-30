@@ -1,12 +1,11 @@
 import 'package:mealprep/navbar.dart';
-import "login_page.dart";
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'package:intl/intl.dart';
 import 'detail_page.dart';
-
+import 'logout_confirm.dart';
 
 class PlannerPage extends StatefulWidget {
   final User user;
@@ -50,7 +49,7 @@ class _PlannerPageState extends State<PlannerPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],

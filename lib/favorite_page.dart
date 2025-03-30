@@ -1,5 +1,4 @@
 import 'package:mealprep/navbar.dart';
-import 'login_page.dart';
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'user.dart';
 import 'detail_page.dart';
 import 'dart:convert';
 import 'user_actions.dart';
+import 'logout_confirm.dart';
 
 class FavoritePage extends StatefulWidget {
   final User currentUser;
@@ -97,7 +97,7 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],

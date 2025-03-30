@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mealprep/navbar.dart';
 import 'user.dart';
 import 'user_db.dart';
-import 'login_page.dart';
+import 'logout_confirm.dart';
 
 class GroceriesPage extends StatefulWidget {
   final User user;
@@ -42,7 +42,7 @@ class _GroceriesPageState extends State<GroceriesPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],
