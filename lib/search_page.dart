@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:mealprep/navbar.dart';
-
+import 'login_page.dart';
 import 'detail_page.dart';
 import 'package:flutter/material.dart';
 import 'recipe_db.dart';
-import 'user_db.dart';
 import 'user.dart';
-import 'package:intl/intl.dart';
 import 'user_actions.dart';
 
 class SearchPage extends StatefulWidget {
@@ -88,6 +86,12 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            icon: Icon(Icons.logout, color: Colors.white)
+          ),
+        ],
         backgroundColor: Colors.green[700],
       ),
       body: Stack(

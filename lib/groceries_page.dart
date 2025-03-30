@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mealprep/navbar.dart';
 import 'user.dart';
 import 'user_db.dart';
+import 'login_page.dart';
 
 class GroceriesPage extends StatefulWidget {
   final User user;
@@ -37,7 +38,14 @@ class _GroceriesPageState extends State<GroceriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Groceries'),
+        title: const Text('Groceries', style: TextStyle(color: Colors.white),),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            icon: Icon(Icons.logout, color: Colors.white)
+          ),
+        ],
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
@@ -86,7 +94,7 @@ class _GroceriesPageState extends State<GroceriesPage> {
           ),
         ],  
       ),  
-      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Groceries"),
+      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Grocery"),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:mealprep/navbar.dart';
-
+import "login_page.dart";
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,14 @@ class _PlannerPageState extends State<PlannerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Planner"),
+        title: const Text('Planner', style: TextStyle(color: Colors.white),),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            icon: Icon(Icons.logout, color: Colors.white)
+          ),
+        ],
         backgroundColor: Colors.green[700],
       ),
       body: Stack(

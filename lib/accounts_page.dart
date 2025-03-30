@@ -1,7 +1,6 @@
 import 'package:mealprep/login_page.dart';
 import 'package:mealprep/navbar.dart';
 
-import 'user_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 
@@ -30,7 +29,14 @@ class _AccountsPageState extends State<AccountsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile Page"),
+        title: const Text('Profile', style: TextStyle(color: Colors.white),),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            icon: Icon(Icons.logout, color: Colors.white)
+          ),
+        ],
         backgroundColor: Colors.green[700],
       ),
       body: Stack(

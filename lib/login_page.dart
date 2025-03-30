@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'search_page.dart';
 import 'user_db.dart';
 import 'register_page.dart';
 import 'favorite_page.dart';
-import 'groceries_page.dart';
-import 'home_page.dart';
-//import 'user.dart';
 
 class LoginPage extends StatefulWidget {
   @override

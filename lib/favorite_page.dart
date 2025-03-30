@@ -1,10 +1,9 @@
 import 'package:mealprep/navbar.dart';
-
+import 'login_page.dart';
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
-import 'package:intl/intl.dart';
 import 'detail_page.dart';
 import 'dart:convert';
 import 'user_actions.dart';
@@ -96,6 +95,12 @@ class _FavoritePageState extends State<FavoritePage> {
             ),
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            icon: Icon(Icons.logout, color: Colors.white)
+          ),
+        ],
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
