@@ -34,7 +34,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late List<String> ingredients;
   late List<String> instructions;
   late UserActions userActions;
-  List<Map<String, dynamic>> _filteredRecipes = [];
+  List<Map<String, dynamic>> _filteredRecipes = []; //required for usserActions class, but unneeded for this class, kept empty
   late Map<String, dynamic> recipe;
   late bool isFavorited;
 
@@ -57,9 +57,9 @@ class _DetailScreenState extends State<DetailScreen> {
     isFavorited = widget.user.favorites.contains(widget.id.toString());
   }
 
+  //used for toggling favorite recipes, adding or removing from favorite list
   void toggleFavorite() {
     setState(() {
-      print(isFavorited);
       isFavorited = !isFavorited;
       if (isFavorited) {
         userActions.addToFavorites(recipe);
@@ -68,7 +68,6 @@ class _DetailScreenState extends State<DetailScreen> {
       }
       widget.onFavoriteChanged(widget.id, isFavorited);
       widget.updateUser(widget.user);
-      print(isFavorited);
     });
   }
 

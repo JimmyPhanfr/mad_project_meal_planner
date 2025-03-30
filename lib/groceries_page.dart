@@ -89,6 +89,7 @@ class _GroceriesPageState extends State<GroceriesPage> {
                           style: const TextStyle(color: Colors.white),
                         ),
                         trailing: IconButton(
+                          //for marking the grocery as bought, removing the grocery form the list
                           icon: const Icon(Icons.check_box_outline_blank, color: Colors.white),
                           onPressed: () => _markAsBought(item),
                         ),
