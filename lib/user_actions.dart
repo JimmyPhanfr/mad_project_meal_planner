@@ -85,6 +85,34 @@ class UserActions {
     );
   }
 
+  Future<void> removeFromTodorecipes(String recipeId, String date) async {
+    List<Map<String, String>> updatedTodorecipes = List.from(currentUser.todorecipes);
+    Map<String, int>? updatedGroceries = Map.from(currentUser.groceries);
+    Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {});
+    if (recipe.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Recipe not found!')),
+      );
+      return;
+    }
+    updatedTodorecipes.removeWhere((entry) => entry['recipeId'] == recipeId && entry['date'] == date);
+    List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients']));
+    for (String ingredient in ingredients) {
+      if (updatedGroceries.containsKey(ingredient)) {
+        updatedGroceries[ingredient] = (updatedGroceries[ingredient]! - 1);
+        if (updatedGroceries[ingredient]! <= 0) {
+          updatedGroceries.remove(ingredient);
+        }
+      }
+    }
+    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
+    await UserDB().updateUser(currentUser);
+    updateUser(currentUser);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Recipe removed from schedule!')),
+    );
+  }
+
   Future<String?> selectDate() async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
