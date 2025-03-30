@@ -9,12 +9,6 @@ import 'user.dart';
 import 'package:intl/intl.dart';
 import 'user_actions.dart';
 
-import 'home_page.dart';
-import 'favorite_page.dart';
-import 'search_page.dart';
-import 'planner_page.dart';
-import 'accounts_page.dart';
-
 class SearchPage extends StatefulWidget {
   final User user;
   const SearchPage({Key? key, required this.user}) : super(key: key); 

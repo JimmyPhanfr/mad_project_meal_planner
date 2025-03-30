@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomePage(user: user)),
+            MaterialPageRoute(builder: (context) => FavoritePage(currentUser: user)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User not found')));

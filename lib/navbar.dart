@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'user.dart';
-import 'home_page.dart';
+// import 'home_page.dart';
 import 'search_page.dart';
 import 'planner_page.dart';
 import 'accounts_page.dart';
 import 'favorite_page.dart';
+import 'groceries_page.dart';
 
 class MyNavBar extends StatelessWidget {
   final User user;
@@ -25,20 +26,20 @@ class MyNavBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                color: currentpage == "Home" ? Colors.lightGreenAccent: null,
-                borderRadius: BorderRadius.all(Radius.elliptical(40, 40)),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user)),);
-                },
-                icon: Icon(Icons.home),
-              ),
-            ),
+            // Container(
+            //   height: 40,
+            //   width: 40,
+            //   decoration: BoxDecoration(
+            //     color: currentpage == "Home" ? Colors.lightGreenAccent: null,
+            //     borderRadius: BorderRadius.all(Radius.elliptical(40, 40)),
+            //   ),
+            //   child: IconButton(
+            //     onPressed: () {
+            //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: user)),);
+            //     },
+            //     icon: Icon(Icons.home),
+            //   ),
+            // ),
             Container(
               height: 40,
               width: 40,
@@ -79,6 +80,20 @@ class MyNavBar extends StatelessWidget {
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: user)),);
                 },
                 icon: Icon(Icons.list),
+              ),
+            ),
+            Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: currentpage == "Grocery" ? Colors.lightGreenAccent: null,
+                borderRadius: BorderRadius.all(Radius.elliptical(40, 40)),
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => GroceriesPage(user: user)),);
+                },
+                icon: Icon(Icons.shopping_basket_outlined),
               ),
             ),
             Container(

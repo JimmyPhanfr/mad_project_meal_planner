@@ -1,18 +1,9 @@
 import 'package:mealprep/login_page.dart';
 import 'package:mealprep/navbar.dart';
 
-import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
-import 'package:intl/intl.dart';
-import 'detail_page.dart';
-
-import 'home_page.dart';
-import 'favorite_page.dart';
-import 'search_page.dart';
-import 'planner_page.dart';
-import 'accounts_page.dart';
 
 import 'textbox.dart';
 import 'accounts_edit_fields.dart';

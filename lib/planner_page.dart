@@ -7,11 +7,6 @@ import 'user.dart';
 import 'package:intl/intl.dart';
 import 'detail_page.dart';
 
-import 'home_page.dart';
-import 'favorite_page.dart';
-import 'search_page.dart';
-import 'planner_page.dart';
-import 'accounts_page.dart';
 
 class PlannerPage extends StatefulWidget {
   final User user;
