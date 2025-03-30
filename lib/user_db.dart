@@ -165,7 +165,7 @@ class UserDB {
   void updatePassword(User user, String password) async {
     final db = await database;
     // Map<String, dynamic> values = user.toMap();
-
+    print("the new pass is $password");
     await db.update(
       'users', 
       {

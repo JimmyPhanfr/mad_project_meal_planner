@@ -1,3 +1,5 @@
+import 'package:mealprep/login_page.dart';
+
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,6 @@ class AccountsPage extends StatefulWidget {
 class _AccountsPageState extends State<AccountsPage> {
   late User _currentUser;
   // DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  
   @override
   void initState() {
     super.initState();
@@ -118,9 +119,9 @@ class _AccountsPageState extends State<AccountsPage> {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()),);
               },
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.logout),
             ),
             IconButton(
               onPressed: () {

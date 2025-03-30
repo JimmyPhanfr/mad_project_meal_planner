@@ -234,7 +234,7 @@ Future<void> editPasswordField(BuildContext context, User user) async {
                   // check password strength
                   if (RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>])[A-Za-z\d!@#\$%^&*(),.?":{}|<>]{8,}$').hasMatch(textControllerPassword.text)) {
                     // update
-                    userDb.updatePassword(user, textControllerPassword.text);
+                    userDb.updatePassword(user, textControllerPassword.text.trim());
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Password change successful.')),
                     );
