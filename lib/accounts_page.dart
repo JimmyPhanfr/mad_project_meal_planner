@@ -11,6 +11,8 @@ import 'search_page.dart';
 import 'planner_page.dart';
 import 'accounts_page.dart';
 
+import 'textbox.dart';
+
 class AccountsPage extends StatefulWidget {
   final User user;
 
@@ -24,6 +26,56 @@ class _AccountsPageState extends State<AccountsPage> {
   late User _currentUser;
   DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
+  // edit field
+  Future<void> editField(String field) async {
+      String newValue = "";
+      await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.grey[900],
+          title: Text(
+            "Edit $field", 
+            style: const TextStyle(color: Colors.white),
+          ), 
+          content: TextField(
+            autofocus: true,
+            style: TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: "Enter new $field",
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            onChanged: (value) {
+              newValue = value;
+            },
+          ),
+          actions: [
+            // cancel button
+            TextButton(
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.white),
+                ),
+              onPressed: () => Navigator.pop(context),
+            ),
+
+            // save button
+            TextButton(
+              child: Text(
+                "Save",
+                style: TextStyle(color: Colors.white),
+                ),
+              onPressed: () => Navigator.of(context).pop(newValue),
+            ),
+          ],
+        ),
+      );
+
+      // update using db functions
+      if (newValue.trim().length > 0) {
+        // only update if there is something in the textfield
+      }
+  }
 
   @override
   void initState() {
@@ -49,7 +101,7 @@ class _AccountsPageState extends State<AccountsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Accounts"),
+        title: Text("Profile Page"),
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
@@ -63,6 +115,46 @@ class _AccountsPageState extends State<AccountsPage> {
           Positioned.fill(
             child: Container(
               color: Colors.black.withOpacity(0.3),
+            ),
+          ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("My Details:", style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal)),
+                  MyTextBox(
+                    text: _currentUser.name, 
+                    sectionName: "Name",
+                    onPressed: () => editField('name'),
+                  ),
+
+                  MyTextBox(
+                    text: _currentUser.email, 
+                    sectionName: "Email",
+                    onPressed: () => editField('email'),
+                  ),
+
+                  MyTextBox(
+                    text: _currentUser.dateOfBirth, 
+                    sectionName: "Date of Birth",
+                    onPressed: () => editField('dateofBirth'),
+                  ),
+
+                  MyTextBox(
+                    text: _currentUser.password, 
+                    sectionName: "Password",
+                    onPressed: () => editField('Password'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

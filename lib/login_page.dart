@@ -4,6 +4,7 @@ import 'user_db.dart';
 import 'register_page.dart';
 import 'favorite_page.dart';
 import 'groceries_page.dart';
+import 'home_page.dart';
 //import 'user.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => GroceriesPage(user: user)),
+            MaterialPageRoute(builder: (context) => HomePage(user: user)),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User not found')));
