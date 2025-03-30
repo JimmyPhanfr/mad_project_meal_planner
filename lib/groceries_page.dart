@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mealprep/navbar.dart';
 import 'user.dart';
 import 'user_db.dart';
-import 'login_page.dart';
+import 'logout_confirm.dart';
 
 /*
 Page to load the user's groceries. This list is retrieved from user's grocery list based on the recipes the user has added to their planner. Page lists the quantity for each ingredient based on the recipes that need the ingredient, 
@@ -47,7 +47,7 @@ class _GroceriesPageState extends State<GroceriesPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],

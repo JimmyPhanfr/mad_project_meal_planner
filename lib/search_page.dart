@@ -1,10 +1,10 @@
 import 'package:mealprep/navbar.dart';
-import 'login_page.dart';
 import 'detail_page.dart';
 import 'package:flutter/material.dart';
 import 'recipe_db.dart';
 import 'user.dart';
 import 'user_actions.dart';
+import 'logout_confirm.dart';
 
 class SearchPage extends StatefulWidget {
   User user;
@@ -106,7 +106,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context), 
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],

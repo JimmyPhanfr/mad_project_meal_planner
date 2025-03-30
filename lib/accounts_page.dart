@@ -1,11 +1,10 @@
-import 'package:mealprep/login_page.dart';
 import 'package:mealprep/navbar.dart';
-
 import 'package:flutter/material.dart';
 import 'user.dart';
-
 import 'textbox.dart';
 import 'accounts_edit_fields.dart';
+import 'logout_confirm.dart';
+import 'user_db.dart';
 
 class AccountsPage extends StatefulWidget {
   final User user;
@@ -33,7 +32,7 @@ class _AccountsPageState extends State<AccountsPage> {
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],
@@ -71,21 +70,13 @@ class _AccountsPageState extends State<AccountsPage> {
                     onPressed: () {
                       setState(() {
                         editNameField(context, _currentUser);
-                        _currentUser = widget.user;
                       });
                     }
                   ),
                   MyTextBox(
                     text: _currentUser.email, 
                     sectionName: "Email",
-                    // onPressed: () => editEmailField(context, _currentUser),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Email not allowed to be changed."),
-                        ),
-                      );
-                    },
+                    onPressed: () => editEmailField(context, _currentUser),
                   ),
                   MyTextBox(
                     text: _currentUser.dateOfBirth, 
@@ -99,7 +90,7 @@ class _AccountsPageState extends State<AccountsPage> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 16, bottom: 6),
-                    child: Text("May have to re-login to see changes.", style: TextStyle(fontSize: 16),),
+                    child: Text("Re-login to see changes.", style: TextStyle(fontSize: 16),),
                   ),
                 ],
               ),

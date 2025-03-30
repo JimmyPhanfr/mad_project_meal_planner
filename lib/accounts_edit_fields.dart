@@ -102,7 +102,7 @@ Future<void> editEmailField(BuildContext context, User user) async {
             // update using db functions
             onPressed: () async {
               if (RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(textControllerEmail.text)) {
-                userDb.updateEmail(user, textControllerEmail.text);
+                userDb.updateEmail(user, textControllerEmail.text.trim().toLowerCase());
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Email change successful.')),
                 );

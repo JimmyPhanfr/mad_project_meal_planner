@@ -45,7 +45,8 @@ class RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
+        title: const Text('Register', style: TextStyle(color: Colors.white),),
+        centerTitle: true,
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
@@ -69,14 +70,20 @@ class RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 12.0,
                   children: [
-                    const SizedBox(height: 40.0, child: Text("Info Needed", style: TextStyle(fontWeight: FontWeight.bold))),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Text(
+                        "Info Needed", 
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                      ),
+                    ),
                     TextFormField(
                       validator: (value) => value == null || value.isEmpty ? 'Please enter your name' : null,
                       controller: _textControllerName,
                       decoration: const InputDecoration(hintText: "Name", border: OutlineInputBorder()),
                     ),
-                    const SizedBox(height: 15.0),
                     TextFormField( //form for user to enter their email, email must be in a valid format string@string.string
                       validator: (value) {
                         RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'); //regex to check if an email is in the correct format
@@ -90,7 +97,6 @@ class RegisterPageState extends State<RegisterPage> {
                       controller: _textControllerEmail,
                       decoration: const InputDecoration(hintText: "Email", border: OutlineInputBorder()),
                     ),
-                    const SizedBox(height: 15.0),
                     TextFormField( // form for user to enter their date of birth, user must select date from the calendar widget to avoid invalid dates entered
                       controller: _textControllerDateOfBirth,
                       readOnly: true,
@@ -101,7 +107,6 @@ class RegisterPageState extends State<RegisterPage> {
                         suffixIcon: IconButton(icon: const Icon(Icons.calendar_today), onPressed: () => _selectDate(context)),
                       ),
                     ),
-                    const SizedBox(height: 15.0),
                     TextFormField( //form for user to enter password, password must not be empty, contain atleast 8 characters, a letter, a number and a special character
                       validator: (value) {
                         RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>])[A-Za-z\d!@#\$%^&*(),.?":{}|<>]{8,}$'); //regex to check if a password contains the minimum requirements
@@ -123,7 +128,6 @@ class RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15.0),
                     TextFormField( //form for user to re-enter password, re entered password must match previous
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -144,30 +148,32 @@ class RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          User newUser = User(
-                            id: 0,
-                            name: _textControllerName.text.trim(),
-                            email: _textControllerEmail.text.trim(),
-                            dateOfBirth: _textControllerDateOfBirth.text,
-                            password: _textControllerPassword.text.trim(),
-                            favorites: [],
-                            groceries: {},
-                            todorecipes: [],
-                          );
-                          int result = await userDb.registerUser(newUser);
-                          if (result > 0) {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Successful')));
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error Registering User')));
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            User newUser = User(
+                              id: 0,
+                              name: _textControllerName.text.trim(),
+                              email: _textControllerEmail.text.trim().toLowerCase(),
+                              dateOfBirth: _textControllerDateOfBirth.text,
+                              password: _textControllerPassword.text.trim(),
+                              favorites: [],
+                              groceries: {},
+                              todorecipes: [],
+                            );
+                            int result = await userDb.registerUser(newUser);
+                            if (result > 0) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Registration Successful')));
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error Registering User')));
+                            }
                           }
-                        }
-                      },
-                      child: const Text('Submit'),
+                        },
+                        child: const Text('Submit'),
+                      ),
                     ),
                   ],
                 ),

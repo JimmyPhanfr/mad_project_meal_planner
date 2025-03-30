@@ -1,10 +1,10 @@
 import 'package:mealprep/navbar.dart';
-import 'login_page.dart';
 import 'recipe_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'detail_page.dart';
 import 'user_actions.dart';
+import 'logout_confirm.dart';
 
 /*
 Page that lists the user's list of favorited recipes. User can remove the recipe from the list of favorites and add the recipe to their planner list
@@ -110,7 +110,7 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage())), 
+            onPressed: () => logout(context),
             icon: Icon(Icons.logout, color: Colors.white)
           ),
         ],
