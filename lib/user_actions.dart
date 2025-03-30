@@ -33,6 +33,7 @@ class UserActions {
   //adds a recipe to the user's list of favorite recipes
   Future<void> addToFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
+    print(updatedFavorites);
     if (!updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.add(recipe['id'].toString());
       currentUser = currentUser.copyWith(favorites: updatedFavorites);
@@ -51,6 +52,7 @@ class UserActions {
   //removes a recipe from the user's list of favorite recipes
   Future<void> removeFromFavorites(Map<String, dynamic> recipe) async {
     List<String> updatedFavorites = List<String>.from(currentUser.favorites);
+    print(updatedFavorites);
     if (updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.remove(recipe['id'].toString());
       currentUser = currentUser.copyWith(favorites: updatedFavorites);

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:mealprep/navbar.dart';
 import 'login_page.dart';
 import 'detail_page.dart';
@@ -35,20 +34,23 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  //loads the list of all recipes from the database
   _loadRecipes() async {
-    final allRecipes = await RecipeDB.instance.getAllRecipes();
+    final allRecipes = await RecipeDB.instance.getAllRecipes(); //keeps track of all the recipes
     setState(() {
-      userActions.recipes = allRecipes;
-      userActions.filterRecipes('');
+      userActions.recipes = allRecipes; 
+      userActions.filterRecipes(''); //since the search page on default shows the list of filteredrecipes, this loads all the recipes into the filtered recipes
     });
   }
 
+  //updates the user information for this page when a user action is done
   void updateUser(User updatedUser) {
     setState(() {
       _currentUser = updatedUser;
     });
   }
 
+  //updates the loaded list of filtered recipes for this page when a search is done
   void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
     setState(() {
       _filteredRecipes = newFilteredRecipes;
@@ -66,7 +68,8 @@ class _SearchPageState extends State<SearchPage> {
             child: TextField(
               onChanged: (query) {
                 setState(() {
-                  userActions.filterRecipes(query);
+                  //searches the list of recipes for a certain query
+                  userActions.filterRecipes(query); 
                 });
               },
               decoration: InputDecoration(
@@ -115,19 +118,21 @@ class _SearchPageState extends State<SearchPage> {
                 mainAxisSpacing: 8.0,
               ),
               itemCount: _filteredRecipes.length,
-              itemBuilder: (context, index) {
-                final recipe = _filteredRecipes[index];
-                final isFavorite = _currentUser.favorites.contains(recipe['id'].toString());
+              itemBuilder: (context, index) { //lists all the recipes in a tile view
+                final recipe = _filteredRecipes[index]; 
+                final isFavorite = _currentUser.favorites.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailScreen(
+                          id: recipe['id'],
                           title: recipe['title'],
                           ingredientsJson: recipe['ingredients'],
                           instructionsJson: recipe['instructions'],
                           image: recipe['image'],
+                          user: _currentUser,
                         ),
                       ),
                     );
@@ -182,18 +187,20 @@ class _SearchPageState extends State<SearchPage> {
                           Positioned(
                             bottom: 10,
                             left: 10,
-                            child: IconButton(
+                            child: IconButton( //button to add a recipe to the favorite list
                               icon: Icon(
                                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                                color: isFavorite ? Colors.red : Colors.white,
+                                color: isFavorite ? Colors.red : Colors.white, 
                               ),
                               onPressed: () {
                                 if (isFavorite) {
                                   setState(() {
+                                    //if the recipe is already favorited, removes the recipe
                                     userActions.removeFromFavorites(recipe);
                                   });
                                 } else {
                                   setState(() {
+                                    //if the recipe is not already favorited, then adds the recipe to the favorite list
                                     userActions.addToFavorites(recipe);
                                   });
                                 }
@@ -203,13 +210,13 @@ class _SearchPageState extends State<SearchPage> {
                           Positioned(
                             bottom: 10,
                             right: 10,
-                            child: IconButton(
+                            child: IconButton( //button to add a recipe to the planner
                               icon: Icon(
                                 Icons.access_alarm_outlined,
                                 color: Colors.white,
                               ),
                               onPressed: () async {
-                                String? selectedDate = await userActions.selectDate();
+                                String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
                                 if (selectedDate != null) {
                                   setState(() {
                                     userActions.addToTodorecipes(recipe['id'].toString(), selectedDate);

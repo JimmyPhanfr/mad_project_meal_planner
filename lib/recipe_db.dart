@@ -2,6 +2,10 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+/*
+Recipe Database class: Does population of database, searching for recipes, insertion, deletion and update of recipes (these are mainly for admin purposes)
+Lists in Recipes are stored in JSONencoded format and retrieved properly using JSONdecode
+*/
 class RecipeDB {
   static final RecipeDB instance = RecipeDB._init();
   static Database? _database;
@@ -34,16 +38,19 @@ class RecipeDB {
     ''');
   }
 
+  //inserts a recipe to the database, assumes the lists in the recipes are already JSONencoded
   Future<int> insertRecipe(Map<String, dynamic> recipe) async {
     final db = await instance.database;
     return await db.insert('recipes', recipe);
   }
 
+  //retrieves all the recipes from the database
   Future<List<Map<String, dynamic>>> getAllRecipes() async {
     final db = await instance.database;
     return await db.query('recipes');
   }
 
+  //retrieves all the recipes that match the list of recipeIds
   Future<List<Map<String, dynamic>>> getRecipes(List<int> recipeIds) async {
     final db = await instance.database;
     final List<Map<String, dynamic>> recipes = await db.query(
@@ -54,11 +61,13 @@ class RecipeDB {
     return recipes;
   }
 
+  //retrieveslength of the recipe database, ie how many recipes are in the database
   Future<int> getDatabaseRecipeCount() async {
     final db = await instance.database;
     return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recipes')) ?? 0;
   }
 
+  //populates the database using a list of recipes
   Future<void> populateDatabase(List<Map<String, dynamic>> recipes) async {
     final db = await instance.database;
     final count = await getDatabaseRecipeCount();
@@ -79,12 +88,13 @@ class RecipeDB {
     print('Database repopulated successfully!');
   }
 
-
+  //updates a recipe, must be given the recipe's corresponding id, the recipe given must have it's list already JSONencoded
   Future<int> updateRecipe(int id, Map<String, dynamic> recipe) async {
     final db = await instance.database;
     return await db.update('recipes', recipe, where: 'id = ?', whereArgs: [id]);
   }
 
+  //deletes a recipe, must be given the recipe's corresponding id
   Future<int> deleteRecipe(int id) async {
     final db = await instance.database;
     return await db.delete('recipes', where: 'id = ?', whereArgs: [id]);
@@ -94,7 +104,9 @@ class RecipeDB {
     final db = await instance.database;
     db.close();
   }
-
+/*
+These functions are not really used as the JSONencoding of recipes is manually done in the original list of recipes
+  //converts a recipe to the appropriate format with its' lists JSONencoded
   Map<String, dynamic> recipeToMap({
     required int id,
     required String title,
@@ -113,6 +125,7 @@ class RecipeDB {
     };
   }
 
+  //converts a recipe to the appropriate format with its' lists JSONencoded, but does not assign an id number, so when the recipe is inserted to the db, it's auto assigned an id number
   Map<String, dynamic> insertRecipeModel({
     required String title,
     required List<String> ingredients,
@@ -128,4 +141,6 @@ class RecipeDB {
       'tags': jsonEncode(tags),
     };
   }
+
+*/
 }

@@ -4,6 +4,10 @@ import 'register_page.dart';
 import 'favorite_page.dart';
 import 'load_recipes.dart';
 
+/*
+Page for the user to login to the app. User must enter a matching email and password that exists in the User Database, otherwise they must enter the register page and register
+*/
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -22,21 +26,17 @@ class _LoginPageState extends State<LoginPage> {
     return user != null;
   }
 
+  //function for logging in to the app, checks if the email and password entered match an for an existing user in the user database. Upon success, populates the recipe database, if the recipe database is already populated then no action is taken
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      bool isValid = await _validateUser(_emailController.text.trim(), _passwordController.text.trim());
-      if (isValid) {
-        final user = await UserDB().getUser(_emailController.text.trim(), _passwordController.text.trim());
-        if (user != null) {
-          await LoadRecipes.instance.loadRecipes();
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => FavoritePage(currentUser: user)),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('User not found')));
-        }
+      final user = await UserDB().getUser(_emailController.text.trim(), _passwordController.text.trim()); //retrieves the user if there is a matching email and password in the database, otherwise returns null to indicate no matching email and password
+      if (user != null) {
+        await LoadRecipes.instance.loadRecipes(); // populates the recipe database in case the database is not populated
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => FavoritePage(currentUser: user)), 
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invalid Email or Password')));
       }
@@ -78,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Text("Login", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 15.0),
                     TextFormField(
+                      //Text form box for user to enter their email
                       controller: _emailController,
                       validator: (value) => value == null || value.isEmpty ? 'Please enter your email' : null,
                       decoration: const InputDecoration(hintText: "Email", border: OutlineInputBorder()),
@@ -88,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: _isPasswordObscure,
                       validator: (value) => value == null || value.isEmpty ? 'Please enter your password' : null,
                       decoration: InputDecoration(
+                        //Text form box for user to enter their password
                         hintText: "Password",
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(

@@ -4,6 +4,9 @@ import 'login_page.dart';
 import 'user_db.dart';
 import 'user.dart';
 
+/*
+Page for registering users. Users must enter a name, valid email address, date of birth and valid password. Upon completion, users data will be stored into the User Database
+*/
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
   @override
@@ -74,9 +77,9 @@ class RegisterPageState extends State<RegisterPage> {
                       decoration: const InputDecoration(hintText: "Name", border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 15.0),
-                    TextFormField(
+                    TextFormField( //form for user to enter their email, email must be in a valid format string@string.string
                       validator: (value) {
-                        RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                        RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'); //regex to check if an email is in the correct format
                         if (value == null || value.isEmpty) {
                           return 'Please enter an email';
                         } else if (!emailRegex.hasMatch(value)) {
@@ -88,7 +91,7 @@ class RegisterPageState extends State<RegisterPage> {
                       decoration: const InputDecoration(hintText: "Email", border: OutlineInputBorder()),
                     ),
                     const SizedBox(height: 15.0),
-                    TextFormField(
+                    TextFormField( // form for user to enter their date of birth, user must select date from the calendar widget to avoid invalid dates entered
                       controller: _textControllerDateOfBirth,
                       readOnly: true,
                       validator: (value) => value == null || value.isEmpty ? 'Please select a date' : null,
@@ -99,9 +102,9 @@ class RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 15.0),
-                    TextFormField(
+                    TextFormField( //form for user to enter password, password must not be empty, contain atleast 8 characters, a letter, a number and a special character
                       validator: (value) {
-                        RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>])[A-Za-z\d!@#\$%^&*(),.?":{}|<>]{8,}$');
+                        RegExp passwordRegex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>])[A-Za-z\d!@#\$%^&*(),.?":{}|<>]{8,}$'); //regex to check if a password contains the minimum requirements
                         if (value == null || value.isEmpty) {
                           return 'Please enter a password';
                         } else if (!passwordRegex.hasMatch(value)) {
@@ -121,7 +124,7 @@ class RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 15.0),
-                    TextFormField(
+                    TextFormField( //form for user to re-enter password, re entered password must match previous
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please Re-Enter password';

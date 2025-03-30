@@ -5,6 +5,11 @@ import 'user.dart';
 import 'user_db.dart';
 import 'login_page.dart';
 
+/*
+Page to load the user's groceries. This list is retrieved from user's grocery list based on the recipes the user has added to their planner. Page lists the quantity for each ingredient based on the recipes that need the ingredient, 
+user can mark the grocery as bought, to be removed from the list
+*/
+
 class GroceriesPage extends StatefulWidget {
   final User user;
 
@@ -15,7 +20,7 @@ class GroceriesPage extends StatefulWidget {
 }
 
 class _GroceriesPageState extends State<GroceriesPage> {
-  late Map<String, int> _groceries;
+  late Map<String, int> _groceries; //keeps track of the user's grocery list
   late User _currentUser;
 
   @override
@@ -25,11 +30,11 @@ class _GroceriesPageState extends State<GroceriesPage> {
     _currentUser = widget.user;
   }
 
+  //this function marks a grocery as bought and removes it from the grocery list, updating the user's data in the database as well
   Future<void> _markAsBought(String item) async {
     setState(() {
       _groceries.remove(item);
     });
-
     User updatedUser = widget.user.copyWith(groceries: _groceries);
     await UserDB().updateUser(updatedUser);
   }
@@ -72,12 +77,12 @@ class _GroceriesPageState extends State<GroceriesPage> {
                     ),
                   )
                 : ListView.builder(
+                    //lists all the groceries from the user's recipe's ingredients
                     shrinkWrap: true,
                     itemCount: _groceries.length,
                     itemBuilder: (context, index) {
                       final item = _groceries.keys.elementAt(index);
                       final quantity = _groceries[item]!;
-
                       return ListTile(
                         title: Text(
                           '$item (x$quantity)',

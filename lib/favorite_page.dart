@@ -1,17 +1,19 @@
 import 'package:mealprep/navbar.dart';
 import 'login_page.dart';
 import 'recipe_db.dart';
-import 'user_db.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'detail_page.dart';
-import 'dart:convert';
 import 'user_actions.dart';
 
-class FavoritePage extends StatefulWidget {
-  final User currentUser;
+/*
+Page that lists the user's list of favorited recipes. User can remove the recipe from the list of favorites and add the recipe to their planner list
+*/
 
-  const FavoritePage({Key? key, required this.currentUser}) : super(key: key);
+class FavoritePage extends StatefulWidget {
+  User currentUser;
+
+  FavoritePage({Key? key, required this.currentUser}) : super(key: key);
 
   @override
   _FavoritePageState createState() => _FavoritePageState();
@@ -19,21 +21,19 @@ class FavoritePage extends StatefulWidget {
 
 class _FavoritePageState extends State<FavoritePage> {
   late List<String> favoriteRecipeIds;
-  List<Map<String, dynamic>> favoriteRecipes = [];
+  List<Map<String, dynamic>> favoriteRecipes = []; 
   List<Map<String, dynamic>> _filteredRecipes = [];
-  late User _currentUser;
   late UserActions userActions;
 
 
   @override
   void initState() {
     super.initState();
-    _currentUser = widget.currentUser;
     favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
     _loadRecipes();
     userActions = UserActions(
       context: context, 
-      currentUser: _currentUser, 
+      currentUser: widget.currentUser, 
       recipes: favoriteRecipes, 
       updateUser: updateUser,
       updateFilteredRecipes: updateFilteredRecipes,
@@ -41,24 +41,25 @@ class _FavoritePageState extends State<FavoritePage> {
     userActions.filterRecipes('');
   }
 
+  //loads the list of the user's favorite recipes
   _loadRecipes() async {
-    //await RecipeDB.instance.populateDatabase(recipes);
-
-    final allRecipes = await RecipeDB.instance.getRecipes(
+    favoriteRecipes = await RecipeDB.instance.getRecipes(
       favoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
     );
     setState(() {
-      userActions.recipes = allRecipes;
+      userActions.recipes = favoriteRecipes;
       userActions.filterRecipes('');
     });
   }
 
+  //updates the user information for this page when a user action is done
   void updateUser(User updatedUser) {
     setState(() {
-      _currentUser = updatedUser;
+      widget.currentUser = updatedUser;
     });
   }
-
+  
+  //updates the loaded list of filtered recipes for this page when a search is done
   void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
     setState(() {
       _filteredRecipes = newFilteredRecipes;
@@ -76,6 +77,7 @@ class _FavoritePageState extends State<FavoritePage> {
             child: TextField(
               onChanged: (query) {
                 setState(() {
+                  //searches the list of recipes for a certain query
                   userActions.filterRecipes(query);
                 });
               },
@@ -125,22 +127,33 @@ class _FavoritePageState extends State<FavoritePage> {
                 mainAxisSpacing: 8.0,
               ),
               itemCount: _filteredRecipes.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index) { //lists all the filtered recipes, default an empty string to list all recipes, is in a tile view
                 final recipe = _filteredRecipes[index];
-                final isFavorite = favoriteRecipeIds.contains(recipe['id'].toString());
+                final isFavorite = favoriteRecipeIds.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
                 return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    final updatedUser = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailScreen(
+                          id: recipe['id'],
                           title: recipe['title'],
                           ingredientsJson: recipe['ingredients'],
                           instructionsJson: recipe['instructions'],
                           image: recipe['image'],
+                          user: widget.currentUser,
                         ),
                       ),
                     );
+                    if (updatedUser != null) {
+                      setState(() {
+                        widget.currentUser = updatedUser;
+                        favoriteRecipeIds = List<String>.from(updatedUser.favorites);
+                        _filteredRecipes = _filteredRecipes
+                            .where((recipe) => favoriteRecipeIds.contains(recipe['id'].toString()))
+                            .toList();
+                      });
+                    }
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -186,6 +199,7 @@ class _FavoritePageState extends State<FavoritePage> {
                             bottom: 10,
                             left: 10,
                             child: IconButton(
+                              //favorite button icon, when pressed removes the favorited recipe
                               icon: Icon(
                                 isFavorite ? Icons.favorite : Icons.favorite_border,
                                 color: isFavorite ? Colors.red : Colors.white,
@@ -193,6 +207,10 @@ class _FavoritePageState extends State<FavoritePage> {
                               onPressed: () { 
                                 setState(() {
                                     userActions.removeFromFavorites(recipe);
+                                    favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
+                                    favoriteRecipes = favoriteRecipes.where((r) => r['id'] != recipe['id']).toList();
+                                    _filteredRecipes = _filteredRecipes.where((r) => r['id'] != recipe['id']).toList();
+                                    userActions.recipes = favoriteRecipes;
                                 });
                               }
                             ),
@@ -200,10 +218,10 @@ class _FavoritePageState extends State<FavoritePage> {
                           Positioned(
                             bottom: 10,
                             right: 10,
-                            child: IconButton(
+                            child: IconButton( //button to add a recipe to the planner
                               icon: const Icon(Icons.access_alarm_outlined, color: Colors.white),
                               onPressed: () async {
-                                String? selectedDate = await userActions.selectDate();
+                                String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
                                 if (selectedDate != null) {
                                   setState(() {
                                     userActions.addToTodorecipes(recipe['id'].toString(), selectedDate);
@@ -222,7 +240,7 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
         ],
       ),
-      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Favorite"),
+      bottomNavigationBar: MyNavBar(user: widget.currentUser, currentpage: "Favorite"),
     );
   }
 }

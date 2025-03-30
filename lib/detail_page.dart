@@ -1,28 +1,89 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'user.dart';
+import 'user_actions.dart';
 
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends StatefulWidget {
+  final int id;
   final String title;
   final String ingredientsJson;
   final String instructionsJson;
   final String image;
+  User user;
 
-  const DetailScreen({super.key, 
+  DetailScreen({super.key, 
+    required this.id,
     required this.title,
     required this.ingredientsJson,
     required this.instructionsJson,
     required this.image,
+    required this.user,
   });
 
   @override
-  Widget build(BuildContext context) {
-    List<String> ingredients = List<String>.from(jsonDecode(ingredientsJson));
-    List<String> instructions = List<String>.from(jsonDecode(instructionsJson));
+  _DetailScreenState createState() => _DetailScreenState();
+}
 
+class _DetailScreenState extends State<DetailScreen> {
+  late List<String> ingredients;
+  late List<String> instructions;
+  late UserActions userActions;
+  List<Map<String, dynamic>> _filteredRecipes = [];
+  late Map<String, dynamic> recipe;
+  late bool isFavorited;
+
+  @override
+  void initState() {
+    super.initState();
+    ingredients = List<String>.from(jsonDecode(widget.ingredientsJson));
+    instructions = List<String>.from(jsonDecode(widget.instructionsJson));
+    userActions = UserActions(
+      context: context, 
+      currentUser: widget.user, 
+      recipes: [], 
+      updateUser: updateUser,
+      updateFilteredRecipes: updateFilteredRecipes,
+    );
+    recipe = {
+      'id' : widget.id,
+      'title' : widget.title,
+    };
+    userActions.filterRecipes('');
+    isFavorited = widget.user.favorites.contains(widget.id.toString());
+  }
+
+  //updates the user information for this page when a user action is done
+  void updateUser(User updatedUser) {
+    setState(() {
+      widget.user = updatedUser;
+    });
+  }
+
+  //updates the loaded list of filtered recipes for this page when a search is done
+  void updateFilteredRecipes(List<Map<String, dynamic>> newFilteredRecipes) {
+    setState(() {
+      _filteredRecipes = newFilteredRecipes;
+    });
+  }
+
+  void toggleFavorite() {
+    setState(() {
+      isFavorited = !isFavorited;
+      if (isFavorited) {
+        userActions.addToFavorites(recipe);
+      } else {
+        userActions.removeFromFavorites(recipe);
+      }
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title,
+          widget.title,
           style: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
@@ -35,7 +96,7 @@ class DetailScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              image,
+              widget.image,
               fit: BoxFit.cover,
             ),
           ),
@@ -88,6 +149,49 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.green[800],
+          border: Border(
+            top: BorderSide(color: Colors.white, width: 2.0),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton.icon(
+              onPressed: toggleFavorite,
+              icon: Icon(
+                isFavorited ? Icons.favorite : Icons.favorite_border,
+                color: isFavorited ? Colors.red : Colors.blueGrey,
+              ),
+              label: Text(isFavorited ? 'Unfavorite' : 'Favorite'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: ()  async {
+                String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
+                if (selectedDate != null) {
+                  setstate() {
+                    userActions.addToTodorecipes(widget.id.toString(), selectedDate);
+                  }
+                print('Added to To-Do Recipes');
+                }
+              },
+              icon: Icon(Icons.access_alarm_outlined, color: Colors.white),
+              label: Text('Add to To-Do'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'recipe_db.dart';
 import 'dart:convert';
 
+/*
+Class to load the recipes into the recipe database
+*/
 class LoadRecipes {
   LoadRecipes._privateConstructor();
   static final LoadRecipes instance = LoadRecipes._privateConstructor();
@@ -15,7 +18,7 @@ class LoadRecipes {
   }
 }
 
-
+//list of the app's recipes
 final List<Map<String, dynamic>> recipes = [
   {
     'id': 1,
