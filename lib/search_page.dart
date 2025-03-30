@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:mealprep/navbar.dart';
+
 import 'detail_page.dart';
 import 'package:flutter/material.dart';
 import 'recipe_db.dart';
@@ -229,55 +231,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60.0,
-        width: double.infinity,
-        color: Colors.white,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.home),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
-              },
-              icon: Icon(Icons.favorite),
-            ),
-            Container(
-              height: 40,
-              width: 40,
-              decoration: new BoxDecoration(
-                color: Colors.lightGreenAccent,
-                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
-                },
-                icon: Icon(Icons.search),
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.list),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.person),
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Search"),
     );
   }
 }

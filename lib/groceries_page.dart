@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mealprep/navbar.dart';
 import 'user.dart';
 import 'user_db.dart';
 
@@ -14,11 +15,13 @@ class GroceriesPage extends StatefulWidget {
 
 class _GroceriesPageState extends State<GroceriesPage> {
   late Map<String, int> _groceries;
+  late User _currentUser;
 
   @override
   void initState() {
     super.initState();
     _groceries = Map.from(widget.user.groceries);
+    _currentUser = widget.user;
   }
 
   Future<void> _markAsBought(String item) async {
@@ -83,6 +86,7 @@ class _GroceriesPageState extends State<GroceriesPage> {
           ),
         ],  
       ),  
+      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Groceries"),
     );
   }
 }

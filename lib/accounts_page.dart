@@ -1,4 +1,5 @@
 import 'package:mealprep/login_page.dart';
+import 'package:mealprep/navbar.dart';
 
 import 'recipe_db.dart';
 import 'user_db.dart';
@@ -109,55 +110,7 @@ class _AccountsPageState extends State<AccountsPage> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60.0,
-        width: double.infinity,
-        color: Colors.white,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()),);
-              },
-              icon: Icon(Icons.logout),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FavoritePage(currentUser: _currentUser)),);
-              },
-              icon: Icon(Icons.favorite),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SearchPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: _currentUser)),);
-              },
-              icon: Icon(Icons.list),
-            ),
-            Container(
-              height: 40,
-              width: 40,
-              decoration: new BoxDecoration(
-                color: Colors.lightGreenAccent,
-                borderRadius: new BorderRadius.all(Radius.elliptical(40, 40)),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AccountsPage(user: _currentUser)),);
-                },
-                icon: Icon(Icons.person),
-              ),
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Accounts"),
     );
   }
 }
