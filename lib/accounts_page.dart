@@ -1,3 +1,5 @@
+import 'package:mealprep/login_page.dart';
+
 import 'recipe_db.dart';
 import 'user_db.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,9 @@ import 'search_page.dart';
 import 'planner_page.dart';
 import 'accounts_page.dart';
 
+import 'textbox.dart';
+import 'accounts_edit_fields.dart';
+
 class AccountsPage extends StatefulWidget {
   final User user;
 
@@ -22,34 +27,18 @@ class AccountsPage extends StatefulWidget {
 
 class _AccountsPageState extends State<AccountsPage> {
   late User _currentUser;
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
-
+  // DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   @override
   void initState() {
     super.initState();
     _currentUser = widget.user;
   }
 
-  Future<String?> _selectDate(BuildContext context) async {
-    DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (selectedDate != null) {
-      return DateFormat('yyyy-MM-dd').format(selectedDate);
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Accounts"),
+        title: Text("Profile Page"),
         backgroundColor: Colors.green[700],
       ),
       body: Stack(
@@ -65,6 +54,59 @@ class _AccountsPageState extends State<AccountsPage> {
               color: Colors.black.withOpacity(0.3),
             ),
           ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("My Details:", style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal)),
+                  MyTextBox(
+                    text: _currentUser.name, 
+                    sectionName: "Name",
+                    onPressed: () {
+                      setState(() {
+                        editNameField(context, _currentUser);
+                        _currentUser = widget.user;
+                      });
+                    }
+                  ),
+                  MyTextBox(
+                    text: _currentUser.email, 
+                    sectionName: "Email",
+                    // onPressed: () => editEmailField(context, _currentUser),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Email not allowed to be changed."),
+                        ),
+                      );
+                    },
+                  ),
+                  MyTextBox(
+                    text: _currentUser.dateOfBirth, 
+                    sectionName: "Date of Birth",
+                    onPressed: () => editDOBField(context, _currentUser),
+                  ),
+                  MyTextBox(
+                    text: "User password hidden for security.",
+                    sectionName: "Password",
+                    onPressed: () => editPasswordField(context, _currentUser),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 16, bottom: 6),
+                    child: Text("May have to re-login to see changes.", style: TextStyle(fontSize: 16),),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: Container(
@@ -77,9 +119,9 @@ class _AccountsPageState extends State<AccountsPage> {
           children: [
             IconButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: _currentUser)),);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()),);
               },
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.logout),
             ),
             IconButton(
               onPressed: () {
