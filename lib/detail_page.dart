@@ -171,17 +171,12 @@ class _DetailScreenState extends State<DetailScreen> {
             ElevatedButton.icon(
               onPressed: ()  async {
                 String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
-                print(selectedDate);
                 if (selectedDate != null) {
-                  print('date was not null');
                   setState(() {
-                    print('Entering user actions');
                     userActions.addToTodorecipes(widget.id.toString(), selectedDate);
                     widget.updateUser(widget.user);
                   });
-                } else {
-                  print('date is null');
-                }
+                } 
               },
               icon: Icon(Icons.access_alarm_outlined, color: Colors.white),
               label: Text('Add to To-Do'),

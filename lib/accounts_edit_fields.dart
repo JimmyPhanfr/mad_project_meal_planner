@@ -23,7 +23,7 @@ Future<bool> _validateUser(String email, String password) async {
   return user != null;
 }
 
-Future<void> editNameField(BuildContext context, User user) async {
+Future<void> editNameField(BuildContext context, User user, Function updateUser) async {
   final textControllerName = TextEditingController();
   final UserDB userDb = UserDB();
 
@@ -54,7 +54,10 @@ Future<void> editNameField(BuildContext context, User user) async {
             // update using db functions
             onPressed: () async {
               if (textControllerName.text.isNotEmpty) {
-                userDb.updateName(user, textControllerName.text);
+                final User? updatedUser = await userDb.updateName(user, textControllerName.text);
+                if (updatedUser != null) {
+                  updateUser(updatedUser);
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Name change successful.')),
                 );
@@ -71,7 +74,7 @@ Future<void> editNameField(BuildContext context, User user) async {
   );
 }
 
-Future<void> editEmailField(BuildContext context, User user) async {
+Future<void> editEmailField(BuildContext context, User user, Function updateUser) async {
   final textControllerEmail = TextEditingController();
   final UserDB userDb = UserDB();
 
@@ -102,7 +105,10 @@ Future<void> editEmailField(BuildContext context, User user) async {
             // update using db functions
             onPressed: () async {
               if (RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(textControllerEmail.text)) {
-                userDb.updateEmail(user, textControllerEmail.text.trim().toLowerCase());
+                final User? updatedUser = await userDb.updateEmail(user, textControllerEmail.text.trim().toLowerCase());
+                if (updatedUser != null) {
+                  updateUser(updatedUser);
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Email change successful.')),
                 );
@@ -119,7 +125,7 @@ Future<void> editEmailField(BuildContext context, User user) async {
   );
 }
 
-Future<void> editDOBField(BuildContext context, User user) async {
+Future<void> editDOBField(BuildContext context, User user, Function updateUser) async {
   final textControllerDOB = TextEditingController();
   final UserDB userDb = UserDB();
 
@@ -153,7 +159,10 @@ Future<void> editDOBField(BuildContext context, User user) async {
             // update using db functions
             onPressed: () async {
               if (textControllerDOB.text.isNotEmpty) {
-                userDb.updateDOB(user, textControllerDOB.text);
+                final User? updatedUser = await userDb.updateDOB(user, textControllerDOB.text);
+                if (updatedUser != null) {
+                  updateUser(updatedUser);
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Date of birth change successful.')),
                 );
@@ -170,7 +179,7 @@ Future<void> editDOBField(BuildContext context, User user) async {
   );
 }
 
-Future<void> editPasswordField(BuildContext context, User user) async {
+Future<void> editPasswordField(BuildContext context, User user, Function updateUser) async {
   final textControllerOldPassword = TextEditingController();
   final textControllerPassword = TextEditingController();
   final textControllerReenterPassword = TextEditingController();
@@ -234,7 +243,10 @@ Future<void> editPasswordField(BuildContext context, User user) async {
                   // check password strength
                   if (RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*(),.?":{}|<>])[A-Za-z\d!@#\$%^&*(),.?":{}|<>]{8,}$').hasMatch(textControllerPassword.text)) {
                     // update
-                    userDb.updatePassword(user, textControllerPassword.text.trim());
+                    final User? updatedUser = await userDb.updatePassword(user, textControllerPassword.text.trim());
+                    if (updatedUser != null) {
+                      updateUser(updatedUser);
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Password change successful.')),
                     );

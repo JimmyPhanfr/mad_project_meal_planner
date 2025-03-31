@@ -7,21 +7,25 @@ import 'logout_confirm.dart';
 import 'user_db.dart';
 
 class AccountsPage extends StatefulWidget {
-  final User user;
+  User user;
 
-  const AccountsPage({super.key, required this.user});
+  AccountsPage({super.key, required this.user});
 
   @override
   _AccountsPageState createState() => _AccountsPageState();
 }
 
 class _AccountsPageState extends State<AccountsPage> {
-  late User _currentUser;
   // DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   @override
   void initState() {
     super.initState();
-    _currentUser = widget.user;
+  }
+
+  void updateUser(User updatedUser) {
+    setState(() {
+      widget.user = updatedUser;
+    });
   }
 
   @override
@@ -65,28 +69,28 @@ class _AccountsPageState extends State<AccountsPage> {
                 children: [
                   const Text("My Details:", style: TextStyle(fontSize: 22, fontWeight: FontWeight.normal)),
                   MyTextBox(
-                    text: _currentUser.name, 
+                    text: widget.user.name, 
                     sectionName: "Name",
                     onPressed: () {
                       setState(() {
-                        editNameField(context, _currentUser);
+                        editNameField(context, widget.user, updateUser);
                       });
                     }
                   ),
                   MyTextBox(
-                    text: _currentUser.email, 
+                    text: widget.user.email, 
                     sectionName: "Email",
-                    onPressed: () => editEmailField(context, _currentUser),
+                    onPressed: () => editEmailField(context, widget.user, updateUser),
                   ),
                   MyTextBox(
-                    text: _currentUser.dateOfBirth, 
+                    text: widget.user.dateOfBirth, 
                     sectionName: "Date of Birth",
-                    onPressed: () => editDOBField(context, _currentUser),
+                    onPressed: () => editDOBField(context, widget.user, updateUser),
                   ),
                   MyTextBox(
                     text: "User password hidden for security.",
                     sectionName: "Password",
-                    onPressed: () => editPasswordField(context, _currentUser),
+                    onPressed: () => editPasswordField(context, widget.user, updateUser),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 16, bottom: 6),
@@ -98,7 +102,7 @@ class _AccountsPageState extends State<AccountsPage> {
           ),
         ],
       ),
-      bottomNavigationBar: MyNavBar(user: _currentUser, currentpage: "Accounts"),
+      bottomNavigationBar: MyNavBar(user: widget.user, currentpage: "Accounts"),
     );
   }
 }

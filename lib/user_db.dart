@@ -95,6 +95,23 @@ class UserDB {
     return null;
   }
 
+  //for returning user information when they are already logged in, ie avoid rehashing of password
+  Future<User?> getUserWithoutHash(String email, String password) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+      limit: 1,
+    );
+    if (result.isNotEmpty) {
+      print('Found user');
+      return User.fromMap(result.first);
+    }
+    print('Did not find user');
+    return null;
+  }
+
   //updates a user within the database, usually used for updating user's favorites, todorecipes and groceries list
   Future<int> updateUser(User user) async {
     final db = await database;
@@ -115,7 +132,8 @@ class UserDB {
     }
   }
 
-  void updateName(User user, String name) async {
+  //updates the user name in the db, returns the user object so parent widget can be properly updated
+  Future<User?> updateName(User user, String name) async {
     final db = await database;
     await db.update(
       'users', 
@@ -125,9 +143,11 @@ class UserDB {
       where: 'id = ?',
       whereArgs: [user.id],
     );
+    return getUserWithoutHash(user.email, user.password);
   }
 
-  void updateEmail(User user, String email) async {
+  //updates the user email in the db, returns the user object so parent widget can be properly updated
+  Future<User?> updateEmail(User user, String email) async {
     final db = await database;
     await db.update(
       'users', 
@@ -137,9 +157,11 @@ class UserDB {
       where: 'id = ?',
       whereArgs: [user.id],
     );
+    return getUserWithoutHash(email, user.password);
   }
 
-  void updateDOB(User user, String dob) async {
+  //updates the user date of birth in the db, returns the user object so parent widget can be properly updated
+  Future<User?> updateDOB(User user, String dob) async {
     final db = await database;
     await db.update(
       'users', 
@@ -149,9 +171,11 @@ class UserDB {
       where: 'id = ?',
       whereArgs: [user.id],
     );
+    return getUserWithoutHash(user.email, user.password);
   }
 
-  void updatePassword(User user, String password) async {
+  //updates the user password in the db as hashed, returns the user object so parent widget can be properly updated
+  Future<User?> updatePassword(User user, String password) async {
     final db = await database;
     final String hashedPassword = _hashPassword(password);
     await db.update(
@@ -162,5 +186,6 @@ class UserDB {
       where: 'id = ?',
       whereArgs: [user.id],
     );
+    return getUserWithoutHash(user.email, password);
   }
 }
