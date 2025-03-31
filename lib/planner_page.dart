@@ -146,8 +146,8 @@ class _PlannerPageState extends State<PlannerPage> {
                                     builder: (context) => DetailScreen(
                                       id: int.parse(recipeId),
                                       title: recipe['title'],
-                                      ingredientsJson: recipe['ingredients'],
-                                      instructionsJson: recipe['instructions'],
+                                      ingredients: recipe['ingredients'],
+                                      instructions: recipe['instructions'],
                                       image: recipe['image'],
                                       user: widget.user,
                                       onFavoriteChanged: updateFavoriteStatus,

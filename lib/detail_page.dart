@@ -6,8 +6,8 @@ import 'user_actions.dart';
 class DetailScreen extends StatefulWidget {
   final int id;
   final String title;
-  final String ingredientsJson;
-  final String instructionsJson;
+  final String ingredients;
+  final String instructions;
   final String image;
   User user;
   final Function(int, bool) onFavoriteChanged;
@@ -18,8 +18,8 @@ class DetailScreen extends StatefulWidget {
   DetailScreen({super.key, 
     required this.id,
     required this.title,
-    required this.ingredientsJson,
-    required this.instructionsJson,
+    required this.ingredients,
+    required this.instructions,
     required this.image,
     required this.user,
     required this.onFavoriteChanged,
@@ -43,8 +43,8 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    ingredients = List<String>.from(jsonDecode(widget.ingredientsJson));
-    instructions = List<String>.from(jsonDecode(widget.instructionsJson));
+    ingredients = List<String>.from(jsonDecode(widget.ingredients));
+    instructions = List<String>.from(jsonDecode(widget.instructions));
     userActions = UserActions(
       context: context, 
       currentUser: widget.user, 

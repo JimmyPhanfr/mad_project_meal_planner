@@ -149,8 +149,8 @@ class _FavoritePageState extends State<FavoritePage> {
                         builder: (context) => DetailScreen(
                           id: recipe['id'],
                           title: recipe['title'],
-                          ingredientsJson: recipe['ingredients'],
-                          instructionsJson: recipe['instructions'],
+                          ingredients: recipe['ingredients'],
+                          instructions: recipe['instructions'],
                           image: recipe['image'],
                           user: widget.currentUser,
                           onFavoriteChanged: updateFavoriteStatus,
