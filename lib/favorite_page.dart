@@ -145,7 +145,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 final isFavorite = favoriteRecipeIds.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
                 return GestureDetector(
                   onTap: () async {
-                    final updatedUser = await Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailScreen(
@@ -162,15 +162,14 @@ class _FavoritePageState extends State<FavoritePage> {
                         ),
                       ),
                     );
-                    if (updatedUser != null) {
-                      setState(() {
-                        widget.currentUser = updatedUser;
-                        favoriteRecipeIds = List<String>.from(updatedUser.favorites);
-                        _filteredRecipes = _filteredRecipes
-                            .where((recipe) => favoriteRecipeIds.contains(recipe['id'].toString()))
-                            .toList();
-                      });
-                    }
+                    setState(() {  
+                      favoriteRecipeIds = List<String>.from(widget.currentUser.favorites);
+                      print('going to change filtered recipes');
+                      _filteredRecipes = _filteredRecipes
+                          .where((recipe) => favoriteRecipeIds.contains(recipe['id'].toString()))
+                          .toList();
+                      print('changed filtered recipes');
+                    });
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
