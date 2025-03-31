@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:mealprep/navbar.dart';
 import 'recipe_db.dart';
 //import 'user_db.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:mealprep/navbar.dart';
 import 'detail_page.dart';
 import 'package:flutter/material.dart';

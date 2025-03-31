@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'user.dart';
@@ -36,7 +38,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late List<String> ingredients;
   late List<String> instructions;
   late UserActions userActions;
-  final List<Map<String, dynamic>> _filteredRecipes = []; //required for usserActions class, but unneeded for this class, kept empty
+  final List<Map<String, dynamic>> _filteredRecipes = []; //required for userActions class, but unneeded for this class, kept empty
   late Map<String, dynamic> recipe;
   late bool isFavorited;
 

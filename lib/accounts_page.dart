@@ -1,10 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:mealprep/navbar.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'textbox.dart';
 import 'accounts_edit_fields.dart';
 import 'logout_confirm.dart';
-import 'user_db.dart';
 
 class AccountsPage extends StatefulWidget {
   User user;
