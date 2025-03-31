@@ -60,7 +60,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-
+  //responsible for properly updating favorite status in parent widget
   void updateFavoriteStatus(int recipeId, bool isFavorited) async {
     List<String> updatedFavoriteRecipeIds = List<String>.from(widget.user.favorites);
     List<Map<String, dynamic>> updatedFavoriteRecipes = await RecipeDB.instance.getRecipes(
