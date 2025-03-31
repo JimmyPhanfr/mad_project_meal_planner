@@ -77,7 +77,7 @@ class MyNavBar extends StatelessWidget {
               ),
               child: IconButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(user: user)),);
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PlannerPage(currentUser: user)),);
                 },
                 icon: Icon(Icons.list),
               ),

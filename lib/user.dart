@@ -1,4 +1,4 @@
- import 'dart:convert';
+import 'dart:convert';
 
 /*
 User class that stores and does conversion of user object to be stored and retrieved from the User Database
