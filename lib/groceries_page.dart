@@ -13,7 +13,7 @@ user can mark the grocery as bought, to be removed from the list
 class GroceriesPage extends StatefulWidget {
   final User user;
 
-  const GroceriesPage({Key? key, required this.user}) : super(key: key);
+  const GroceriesPage({super.key, required this.user});
 
   @override
   _GroceriesPageState createState() => _GroceriesPageState();

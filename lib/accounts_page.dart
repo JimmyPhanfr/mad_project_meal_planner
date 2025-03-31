@@ -9,7 +9,7 @@ import 'user_db.dart';
 class AccountsPage extends StatefulWidget {
   final User user;
 
-  const AccountsPage({Key? key, required this.user}) : super(key: key);
+  const AccountsPage({super.key, required this.user});
 
   @override
   _AccountsPageState createState() => _AccountsPageState();

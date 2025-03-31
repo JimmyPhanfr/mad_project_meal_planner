@@ -13,7 +13,7 @@ Page that lists the user's list of favorited recipes. User can remove the recipe
 class FavoritePage extends StatefulWidget {
   User currentUser;
 
-  FavoritePage({Key? key, required this.currentUser}) : super(key: key);
+  FavoritePage({super.key, required this.currentUser});
 
   @override
   _FavoritePageState createState() => _FavoritePageState();
@@ -156,6 +156,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           onFavoriteChanged: updateFavoriteStatus,
                           updateUser: updateUser,
                           updateFilteredRecipes: updateFilteredRecipes,
+                          recipes: favoriteRecipes,
                         ),
                       ),
                     );

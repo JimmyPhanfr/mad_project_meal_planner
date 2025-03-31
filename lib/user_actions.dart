@@ -66,10 +66,13 @@ class UserActions {
 
   //adds a recipe to the user's list of todo recipes, also adds the recipe's ingredients to the user's grocery list
   Future<void> addToTodorecipes(String recipeId, String date) async {
+    print('starting adding to todo list');
     List<Map<String, String>> updatedTodorecipes = List.from(currentUser.todorecipes);
     Map<String, int>? updatedGroceries = Map.from(currentUser.groceries);
     Map<String, dynamic>? recipe = recipes.firstWhere((recipe) => recipe['id'].toString() == recipeId, orElse: () => {}); 
+    print('recipe id is $recipeId');
     if (recipe.isEmpty) {
+      print('recipe not found');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: Recipe not found!')),
       );

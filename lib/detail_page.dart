@@ -13,6 +13,7 @@ class DetailScreen extends StatefulWidget {
   final Function(int, bool) onFavoriteChanged;
   final Function(User) updateUser;
   final Function(List<Map<String, dynamic>>) updateFilteredRecipes;
+  final List<Map<String, dynamic>> recipes;
 
   DetailScreen({super.key, 
     required this.id,
@@ -24,6 +25,7 @@ class DetailScreen extends StatefulWidget {
     required this.onFavoriteChanged,
     required this.updateUser,
     required this.updateFilteredRecipes,
+    required this.recipes,
   });
 
   @override
@@ -34,7 +36,7 @@ class _DetailScreenState extends State<DetailScreen> {
   late List<String> ingredients;
   late List<String> instructions;
   late UserActions userActions;
-  List<Map<String, dynamic>> _filteredRecipes = []; //required for usserActions class, but unneeded for this class, kept empty
+  final List<Map<String, dynamic>> _filteredRecipes = []; //required for usserActions class, but unneeded for this class, kept empty
   late Map<String, dynamic> recipe;
   late bool isFavorited;
 
@@ -46,7 +48,7 @@ class _DetailScreenState extends State<DetailScreen> {
     userActions = UserActions(
       context: context, 
       currentUser: widget.user, 
-      recipes: [], 
+      recipes: widget.recipes, 
       updateUser: widget.updateUser,
       updateFilteredRecipes: widget.updateFilteredRecipes,
     );
@@ -169,11 +171,16 @@ class _DetailScreenState extends State<DetailScreen> {
             ElevatedButton.icon(
               onPressed: ()  async {
                 String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
+                print(selectedDate);
                 if (selectedDate != null) {
-                  setstate() {
+                  print('date was not null');
+                  setState(() {
+                    print('Entering user actions');
                     userActions.addToTodorecipes(widget.id.toString(), selectedDate);
                     widget.updateUser(widget.user);
-                  }
+                  });
+                } else {
+                  print('date is null');
                 }
               },
               icon: Icon(Icons.access_alarm_outlined, color: Colors.white),

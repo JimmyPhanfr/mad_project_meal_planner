@@ -10,7 +10,7 @@ import 'logout_confirm.dart';
 class PlannerPage extends StatefulWidget {
   final User user;
 
-  const PlannerPage({Key? key, required this.user}) : super(key: key);
+  const PlannerPage({super.key, required this.user});
 
   @override
   _PlannerPageState createState() => _PlannerPageState();
@@ -18,7 +18,7 @@ class PlannerPage extends StatefulWidget {
 
 class _PlannerPageState extends State<PlannerPage> {
   late User _currentUser;
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  final DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
 
   @override

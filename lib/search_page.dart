@@ -8,14 +8,13 @@ import 'logout_confirm.dart';
 
 class SearchPage extends StatefulWidget {
   User user;
-  SearchPage({Key? key, required this.user}) : super(key: key); 
+  SearchPage({super.key, required this.user}); 
 
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Map<String, dynamic>> _recipes = [];
   List<Map<String, dynamic>> _filteredRecipes = [];
   List<Map<String, dynamic>> favoriteRecipes =[];
   List<String> favoriteRecipeIds = [];
@@ -28,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
     userActions = UserActions(
       context: context, 
       currentUser: widget.user, 
-      recipes: _recipes, 
+      recipes: [], 
       updateUser: updateUser,
       updateFilteredRecipes: updateFilteredRecipes,
     );
@@ -152,6 +151,7 @@ class _SearchPageState extends State<SearchPage> {
                           onFavoriteChanged: updateFavoriteStatus,
                           updateUser: updateUser,
                           updateFilteredRecipes: updateFilteredRecipes,
+                          recipes: _filteredRecipes,
                         ),
                       ),
                     );

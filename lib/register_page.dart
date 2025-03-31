@@ -14,7 +14,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
-  DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  final DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   final _formKey = GlobalKey<FormState>();
 
   final _textControllerName = TextEditingController();
