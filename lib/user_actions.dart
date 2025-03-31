@@ -36,9 +36,9 @@ class UserActions {
     print(updatedFavorites);
     if (!updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.add(recipe['id'].toString());
-      currentUser = currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(currentUser);
-      updateUser(currentUser);
+      currentUser = currentUser.copyWith(favorites: updatedFavorites); //updates the user object in useractions class
+      await UserDB().updateUser(currentUser); //updates the user in the database
+      updateUser(currentUser); //updates the user object in the parent widget
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} added to favorites!')),
       );
@@ -55,9 +55,9 @@ class UserActions {
     print(updatedFavorites);
     if (updatedFavorites.contains(recipe['id'].toString())) {
       updatedFavorites.remove(recipe['id'].toString());
-      currentUser = currentUser.copyWith(favorites: updatedFavorites);
-      await UserDB().updateUser(currentUser);
-      updateUser(currentUser);
+      currentUser = currentUser.copyWith(favorites: updatedFavorites); //updates the user object in useractions class
+      await UserDB().updateUser(currentUser); //updates the user in the database
+    updateUser(currentUser); //updates the user object in the parent widget
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${recipe['title']} removed from favorites!')),
       );
@@ -80,9 +80,9 @@ class UserActions {
     for (String ingredient in ingredients) { //adds the ingredient to the grocery list, increments the grocery quantity by one if it exists, otherwise a default of 1 is put
       updatedGroceries[ingredient] = (updatedGroceries[ingredient] ?? 0) + 1;
     }
-    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
-    await UserDB().updateUser(currentUser);
-    updateUser(currentUser);
+    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries); //updates the user object in useractions class
+    await UserDB().updateUser(currentUser); //updates the user in the database
+    updateUser(currentUser); //updates the user object in the parent widget
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Recipe scheduled for $date!')),
     );
@@ -109,9 +109,9 @@ class UserActions {
         }
       }
     }
-    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries);
-    await UserDB().updateUser(currentUser);
-    updateUser(currentUser);
+    currentUser = currentUser.copyWith(todorecipes: updatedTodorecipes, groceries: updatedGroceries); //updates the user object in useractions class
+    await UserDB().updateUser(currentUser); //updates the user in the database
+    updateUser(currentUser); //updates the user object in the parent widget
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Recipe removed from schedule!')),
     );

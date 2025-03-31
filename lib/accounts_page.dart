@@ -94,7 +94,6 @@ class _AccountsPageState extends State<AccountsPage> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 16, bottom: 6),
-                    child: Text("Re-login to see changes.", style: TextStyle(fontSize: 16),),
                   ),
                 ],
               ),
