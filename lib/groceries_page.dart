@@ -7,7 +7,8 @@ import 'user_db.dart';
 import 'logout_confirm.dart';
 
 /*
-Page to load the user's groceries. This list is retrieved from user's grocery list based on the recipes the user has added to their planner. Page lists the quantity for each ingredient based on the recipes that need the ingredient, 
+Page to load the user's groceries. This list is retrieved from user's grocery list based on the recipes the user has added to their planner. 
+Page lists the quantity for each ingredient based on the recipes that need the ingredient, 
 user can mark the grocery as bought, to be removed from the list
 */
 

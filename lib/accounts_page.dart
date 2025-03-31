@@ -17,7 +17,6 @@ class AccountsPage extends StatefulWidget {
 }
 
 class _AccountsPageState extends State<AccountsPage> {
-  // DateTime _date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   @override
   void initState() {
     super.initState();

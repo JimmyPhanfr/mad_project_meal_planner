@@ -30,10 +30,12 @@ class _LoginPageState extends State<LoginPage> {
     return user != null;
   }
 
-  //function for logging in to the app, checks if the email and password entered match an for an existing user in the user database. Upon success, populates the recipe database, if the recipe database is already populated then no action is taken
+  // Function for logging in to the app, checks if the email and password entered match an for an existing user in the user database. 
+  // Upon success, populates the recipe database, if the recipe database is already populated then no action is taken
   void _login(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      final user = await UserDB().getUser(_emailController.text.trim().toLowerCase(), _passwordController.text.trim()); //retrieves the user if there is a matching email and password in the database, otherwise returns null to indicate no matching email and password
+      //retrieves the user if there is a matching email and password in the database, otherwise returns null to indicate no matching email and password
+      final user = await UserDB().getUser(_emailController.text.trim().toLowerCase(), _passwordController.text.trim());
       if (user != null) {
         await LoadRecipes.instance.loadRecipes(); // populates the recipe database in case the database is not populated
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Login Successful')));
