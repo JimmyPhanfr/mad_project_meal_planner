@@ -76,7 +76,8 @@ class UserActions {
       return;
     }
     print('adding recipe to todo list');
-    updatedTodorecipes.add({'recipeId': recipeId, 'date': date}); 
+    // updatedTodorecipes.add({'recipeId': recipeId, 'date': date}); 
+    updatedTodorecipes.add({recipeId : date}); 
     List<String> ingredients = List<String>.from(jsonDecode(recipe['ingredients'])); 
     print('added recipe to todo list, adding recipe ingredients');
     for (String ingredient in ingredients) { //adds the ingredient to the grocery list, increments the grocery quantity by one if it exists, otherwise a default of 1 is put

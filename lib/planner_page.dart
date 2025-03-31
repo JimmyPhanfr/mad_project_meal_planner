@@ -55,6 +55,8 @@ class _PlannerPageState extends State<PlannerPage> {
     setState(() {
       userActions.recipes = todoRecipes;
       userActions.filterRecipes('');
+      print(" These are the todo recipe map: $todoRecipesAndDate");
+      print(" These are the todo recipe Ids: $todoRecipeIds");
     });
     favoriteRecipes = await RecipeDB.instance.getRecipes(
       favoriteRecipeIds.map((e) => int.tryParse(e) ?? 0).toList()
@@ -134,7 +136,7 @@ class _PlannerPageState extends State<PlannerPage> {
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
               ),
-              itemCount: todoRecipesAndDate.length,
+              itemCount: todoRecipeIds.length,
               itemBuilder: (context, index) {
                 final recipe = todoRecipes[index];
                 final isFavorite = widget.currentUser.favorites.contains(recipe['id'].toString()); //keeps track of which recipes have been favorited by the user, to show the appropriate icon and appropriate action when button pressed
@@ -230,14 +232,10 @@ class _PlannerPageState extends State<PlannerPage> {
                             bottom: 10,
                             right: 10,
                             child: IconButton( //button to add a recipe to the planner
-                              icon: const Icon(Icons.access_alarm_outlined, color: Colors.white),
+                              icon: const Icon(Icons.access_alarm_outlined, color: Colors.amber),
                               onPressed: () async {
-                                String? selectedDate = await userActions.selectDate(); //for user to select a date for the recipe
-                                if (selectedDate != null) {
-                                  setState(() {
-                                    userActions.addToTodorecipes(recipe['id'].toString(), selectedDate);
-                                  });
-                                }
+                                // remove recipe from page
+                                // userActions.removeFromTodorecipes(recipe);
                               },
                             ),
                           ),
